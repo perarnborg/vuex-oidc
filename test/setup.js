@@ -2,8 +2,6 @@ const jsdom = require('jsdom');
 const StorageShim = require('node-storage-shim');
 const sinon = require('sinon');
 
-console.log("HELO SETUP", Object.keys(jsdom));
-
 const DEFAULT_HTML = '<html><body></body></html>';
 
 global.document = new jsdom.JSDOM(DEFAULT_HTML);

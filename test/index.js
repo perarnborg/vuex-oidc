@@ -1,10 +1,3 @@
-const assert = require('assert');
+require('./setup')
 
-require('./setup');
-const vuexOidc = require('../dist/vuex-oidc.cjs');
-
-describe('vuexOidc', function() {
-  it('should do the impossible', function() {
-    assert.equal(false, true);
-  });
-});
+require('./oidc-helper.test')

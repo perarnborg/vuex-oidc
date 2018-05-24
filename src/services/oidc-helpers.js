@@ -15,9 +15,9 @@ const requiredConfigProperties = [
 ]
 
 export const createOidcUserManager = (oidcConfig) => {
-  Object.keys(oidcConfig).forEach((requiredProperty) => {
+  requiredConfigProperties.forEach((requiredProperty) => {
     if (!oidcConfig[requiredProperty]) {
-      throw new Error('Required oidc settin ' + requiredProperty + ' missing for creating UserManager')
+      throw new Error('Required oidc setting ' + requiredProperty + ' missing for creating UserManager')
     }
   })
   return new UserManager(Object.assign(
