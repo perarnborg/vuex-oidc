@@ -33,6 +33,7 @@ export default [
 		],
 		plugins: [
 			VuePlugin()
-		]
+		],
+  	external: [ 'vuex', 'oidc-client' ]
 	}
 ];
