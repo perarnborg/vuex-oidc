@@ -1,0 +1,41 @@
+{
+  "name": "vuex-oidc",
+  "description": "Vue.js implementation of oidc-client using vuex and vue-router",
+  "version": "0.0.1",
+  "homepage": "https://github.com/perarnborg/vuex-oidc#readme",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/perarnborg/vuex-oidc.git"
+  },
+  "main": "dist/vuex-oidc.cjs.js",
+  "module": "dist/vuex-oidc.esm.js",
+  "browser": "dist/vuex-oidc.umd.js",
+  "dependencies": {
+    "oidc-client": "^1.5.0-beta.4",
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "jsdom": "^11.11.0",
+    "mocha": "^5.1.1",
+    "node-storage-shim": "^1.0.1",
+    "rollup": "^0.58.0",
+    "rollup-plugin-babel": "^3.0.4",
+    "rollup-plugin-commonjs": "^9.1.0",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-vue": "^4.1.4",
+    "sinon": "^5.0.10",
+    "vue": "^2.5.16",
+    "vue-template-compiler": "^2.5.16"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "mocha",
+    "pretest": "npm run build"
+  },
+  "files": [
+    "dist"
+  ]
+}
