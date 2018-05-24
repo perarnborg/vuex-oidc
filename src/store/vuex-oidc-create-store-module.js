@@ -11,7 +11,7 @@ export default (oidcConfig) => {
   }
 
   const getters = {
-    isAuthenticated: (state) => {
+    oidcIsAuthenticated: (state) => {
       if (state.access_token || state.id_token) {
         return true
       }
@@ -24,7 +24,7 @@ export default (oidcConfig) => {
 
   const actions = {
     checkAuthentication ({ getters, dispatch }, route) {
-      if (!getters.isAuthenticated && !route.meta.isVuexOidcCallback) {
+      if (!getters.oidcIsAuthenticated && !route.meta.isVuexOidcCallback) {
         if (route.meta.isPublic) {
           dispatch('authenticateSilent')
         } else if (oidcConfig.silent_redirect_uri){

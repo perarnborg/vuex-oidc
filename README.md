@@ -52,7 +52,10 @@ const routes = [
   {
     path: '/oidc-callback', // Needs to match redirect_uri in you oidcConfig
     name: 'oidcCallback',
-    component: VuexOidcSigningCallbackComponent
+    component: VuexOidcSigningCallbackComponent,
+    meta {
+      isVuexOidcCallback: true
+    }
   }
 ]
 
@@ -70,20 +73,71 @@ If you want to have a loader/spinner on the callback route this is what the mark
 ### 4) Setup vue-router
 
 ```js
-import { VuexOidcSigningCallbackComponent } from 'vuex-oidc'
+import Router from 'vue-router'
+import { vuexOidcRouterMiddleware } from 'vuex-oidc'
 
-const routes = [
-  ...yourApplicationsRoutes,
-  {
-    path: '/oidc-callback', // Needs to match redirect_uri in you oidcConfig
-    name: 'oidcCallback',
-    component: VuexOidcSigningCallbackComponent
-  }
-]
+const router = new Router({
+  mode: 'history',
+  routes: routes
+})
+router.beforeEach(vuexOidcRouterMiddleware)
 
 ```
 
-### 5) Optional: set specific routes as public
+### 5) Control rendering in routes that require authentication
+
+The vuex getter oidcIsAuthenticated can be used to check login. This can be done in any way you want. Here is an example
+of how to condition rendering against authentication in a component.
+
+```js
+<template>
+  <div v-if="oidcIsAuthenticated">
+    Protected content
+  </div>
+</template>
+
+<script>
+import { mapGetters } from 'vuex'
+
+export default {
+  name: 'MyProtectedRouteComponent',
+  computed: {
+    ...mapGetters([
+      'oidcIsAuthenticated'
+    ])
+  }
+}
+</script>
+
+```
+
+### 6) Optional: display signed in user info
+
+Use vuex getter oidcUser.
+
+```js
+<template>
+  <div v-if="oidcUser">
+    Signed in as {{ oidcUser.email }}
+  </div>
+</template>
+
+<script>
+import { mapGetters } from 'vuex'
+
+export default {
+  name: 'MyProtectedRouteComponent',
+  computed: {
+    ...mapGetters([
+      'oidcUser'
+    ])
+  }
+}
+</script>
+
+```
+
+### 7) Optional: set specific routes as public
 
 ```js
 import { PublicRouteComponent } from '@/components/PublicRouteComponent'
@@ -102,10 +156,10 @@ const routes = [
 
 ```
 
-If you have setup a silent_redirect_uri a silent signIn will be made on public routes.
+Routes with meta.isPublic will not require authentication. If you have setup a silent_redirect_uri a silent signIn will be made on public routes.
 
 
-### 6) Optional: setup silent renew callback
+### 8) Optional: setup silent renew callback
 
 ```js
 export const oidcConfig = {
