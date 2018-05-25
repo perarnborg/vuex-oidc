@@ -45,34 +45,59 @@ export default new Vuex.Store({
 
 ### 3) Setup route for Open id callback
 
-Import and use callback component. Is is created with a factory function that takes your store and your vue-router as arguments.
+Create a callback component. The component will be rendered during the time that the callback is made, so feel free to add
+any loader/spinner if you want.
 
 ```js
-import { vuexOidcCreateSignInCallbackComponent } from 'vuex-oidc'
+<template>
+  <div>
+  </div>
+</template>
 
-import { store } from '@/store'
-import { router } from '@/router'
+<script>
+import { mapActions } from 'vuex'
+
+import { router } from '@/routes/router'
+
+export default {
+  name: 'OidcCallback',
+  methods: {
+    ...mapActions([
+      'oidcSignInCallback'
+    ])
+  },
+  mounted() {
+    this.oidcSignInCallback()
+      .then((redirectPath) => {
+        router.push(redirectPath)
+      })
+      .catch((err) => {
+        console.error(err)
+        router.push('/oidc-callback-error') // Handle errors any way you want
+      })
+  }
+}
+</script>
+```
+
+Setup the route with your callback component. Note the meta properties isVuexOidcCallback and isPublic which are required
+for this route.
+
+```js
+import OidcCallback from '@/components/OidcCallback'
 
 const routes = [
   ...yourApplicationsRoutes,
   {
     path: '/oidc-callback', // Needs to match redirect_uri in you oidcSettings
     name: 'oidcCallback',
-    component: vuexOidcCreateSignInCallbackComponent(store, router),
+    component: OidcCallback,
     meta {
-      isVuexOidcCallback: true
+      isVuexOidcCallback: true,
+      isPublic: true
     }
   }
 ]
-
-```
-
-If you want to have a loader/spinner on the callback route this is what the markup of the callback component looks like:
-
-```html
-<div class="vuex-oidc-loader">
-  <div class="vuex-oidc-loader__inner"></div>
-</div>
 
 ```
 
@@ -149,25 +174,31 @@ export default {
 ```
 
 
-### 6) Optional: display signed in user info
+### 6) Optional: display signed in user info and show sign out button
 
-Use vuex getter oidcUser.
+Use vuex getter oidcUser to show user info. Use vuex action signOutOidc to sign out user.
 
 ```js
 <template>
   <div v-if="oidcUser">
     Signed in as {{ oidcUser.email }}
+    <button @click="signOutOidc">Sign out</button>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'MyProtectedRouteComponent',
   computed: {
     ...mapGetters([
       'oidcUser'
+    ])
+  },
+  methods: {
+    ...mapActions([
+      'signOutOidc'
     ])
   }
 }
