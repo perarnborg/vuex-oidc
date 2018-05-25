@@ -1,7 +1,7 @@
 import { createOidcUserManager, processSilentSignInCallback } from './services/oidc-helpers'
-import createStoreModule from './store/vuex-oidc-create-store-module'
+import createStoreModule from './store/create-store-module'
 import SignInCallbackComponent from './components/VuexOidcSignInCallbackComponent.vue'
-import routerMiddleware from './router/vuex-oidc-router-middleware'
+import createRouterMiddleware from './router/create-router-middleware'
 
 export const vuexOidcCreateUserManager = createOidcUserManager
 
@@ -9,6 +9,6 @@ export const vuexOidcCreateStoreModule = createStoreModule
 
 export const VuexOidcSignInCallbackComponent = SignInCallbackComponent
 
-export const vuexOidcRouterMiddleware = routerMiddleware
+export const vuexOidcCreateRouterMiddleware = createRouterMiddleware
 
 export const vuexOidcProcessSilentSignInCallback = processSilentSignInCallback

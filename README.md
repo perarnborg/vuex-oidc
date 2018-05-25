@@ -72,15 +72,19 @@ If you want to have a loader/spinner on the callback route this is what the mark
 
 ### 4) Setup vue-router
 
+Create the oidc router middleware with factory funtion vuexOidcCreateRouterMiddleware that takes your vuex store as argument.
+
 ```js
 import Router from 'vue-router'
-import { vuexOidcRouterMiddleware } from 'vuex-oidc'
+import { vuexOidcCreateRouterMiddleware } from 'vuex-oidc'
+
+import store from '@/store'
 
 const router = new Router({
   mode: 'history',
   routes: routes
 })
-router.beforeEach(vuexOidcRouterMiddleware)
+router.beforeEach(vuexOidcCreateRouterMiddleware(store))
 
 ```
 

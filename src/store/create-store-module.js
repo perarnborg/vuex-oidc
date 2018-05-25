@@ -24,7 +24,7 @@ export default (oidcConfig) => {
 
   const actions = {
     checkAuthentication ({ getters, dispatch }, route) {
-      if (!getters.oidcIsAuthenticated && !route.meta.isVuexOidcCallback) {
+      if (!getters.oidcIsAuthenticated && !route.meta.isOidcCallback) {
         if (route.meta.isPublic) {
           dispatch('authenticateSilent')
         } else if (oidcConfig.silent_redirect_uri){
