@@ -23,54 +23,54 @@ export default (oidcConfig, router) => {
   }
 
   const actions = {
-    checkAuthentication ({ getters, dispatch }, route) {
+    checkOidcAuthentication ({ getters, dispatch }, route) {
       if (!getters.oidcIsAuthenticated && !route.meta.isOidcCallback) {
         if (route.meta.isPublic) {
-          dispatch('authenticateSilent')
+          dispatch('authenticateOidcSilent')
         } else if (oidcConfig.silent_redirect_uri){
-          dispatch('authenticate', route)
+          dispatch('authenticateOidc', route)
         }
       }
     },
-    authenticate ({ dispatch }, route) {
+    authenticateOidc ({ dispatch }, route) {
       sessionStorage.setItem('vuex_oidc_active_route', route.path)
       oidcUserManager.signinRedirect().catch(function(err) {
         console.log(err)
       })
     },
-    signInCallback({ dispatch }) {
+    oidcSignInCallback({ dispatch }) {
       oidcUserManager.signinRedirectCallback().then(function (user) {
-        dispatch('wasAuthenticated', user)
+        dispatch('oidcWasAuthenticated', user)
       }).catch(function (err) {
         if (err.message === 'No matching state found in storage') {
         }
       })
     },
-    wasAuthenticated({ dispatch, commit }, user) {
-      commit('setAuth', user)
-      dispatch('getUser')
+    oidcWasAuthenticated({ dispatch, commit }, user) {
+      commit('setOidcAuth', user)
+      dispatch('getOidcUser')
       router.push(sessionStorage.getItem('vuex_oidc_active_route') || '/')
     },
-    authenticateSilent({ dispatch }) {
+    authenticateOidcSilent({ dispatch }) {
       oidcUserManager.signinSilent().then(function (user) {
-        dispatch('wasAuthenticatedSilent', user)
+        dispatch('oidcWasAuthenticatedSilent', user)
       }).catch(function () {
       })
     },
-    wasAuthenticatedSilent({ dispatch, commit }, user) {
-      commit('setAuth', user)
-      dispatch('getUser')
+    oidcWasAuthenticatedSilent({ dispatch, commit }, user) {
+      commit('setOidcAuth', user)
+      dispatch('getOidcUser')
     },
-    getUser ({ commit }) {
-      oidcUserManager.getUser().then(function(user) {
-        commit('setUser', user.profile)
+    getOidcUser ({ commit }) {
+      oidcUserManager.getOidcUser().then(function(user) {
+        commit('setOidcUser', user.profile)
       }).catch(function(err) {
         console.log(err)
       })
     },
-    signOut ({ commit }) {
+    signOutOidc ({ commit }) {
       oidcUserManager.signoutRedirect().then(function(resp) {
-        commit('unsetAuth')
+        commit('unsetOidcAuth')
       }).catch(function(err) {
         console.log(err)
       })
@@ -78,14 +78,14 @@ export default (oidcConfig, router) => {
   }
 
   const mutations = {
-    setAuth (state, user) {
+    setOidcAuth (state, user) {
       state.id_token = user.id_token
       state.access_token = user.access_token
     },
-    setUser (state, user) {
+    setOidcUser (state, user) {
       state.user = user
     },
-    unsetAuth (state) {
+    unsetOidcAuth (state) {
       state.token = null
       state.token = null
     }
