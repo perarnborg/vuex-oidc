@@ -9,7 +9,7 @@
     "vue oidc",
     "vue open id"
   ],
-  "version": "0.6.0",
+  "version": "0.7.0",
   "homepage": "https://github.com/perarnborg/vuex-oidc#readme",
   "license": "MIT",
   "repository": {
