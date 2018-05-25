@@ -20,7 +20,6 @@
   },
   "main": "dist/vuex-oidc.cjs.js",
   "module": "dist/vuex-oidc.esm.js",
-  "browser": "dist/vuex-oidc.umd.js",
   "dependencies": {
     "oidc-client": "^1.5.0-beta.4",
     "vue-router": "^3.0.1",
