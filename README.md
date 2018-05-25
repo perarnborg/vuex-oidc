@@ -10,3 +10,4 @@ See the wiki for doumentation on how to implement vue-router: https://github.com
 ## License
 
 [MIT](LICENSE).
+

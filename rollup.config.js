@@ -1,7 +1,7 @@
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
+// import resolve from 'rollup-plugin-node-resolve';
+// import commonjs from 'rollup-plugin-commonjs';
 import pkg from './package.json';
-import VuePlugin from 'rollup-plugin-vue'
+// import VuePlugin from 'rollup-plugin-vue'
 
 export default [
 	// browser-friendly UMD build
@@ -31,9 +31,9 @@ export default [
 			{ file: pkg.main, format: 'cjs' },
 			{ file: pkg.module, format: 'es' }
 		],
-		plugins: [
-			VuePlugin()
-		],
+		// plugins: [
+		// 	VuePlugin()
+		// ],
   	external: [ 'vuex', 'oidc-client' ]
 	}
 ];
