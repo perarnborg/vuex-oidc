@@ -20,10 +20,13 @@
   },
   "main": "dist/vuex-oidc.cjs.js",
   "module": "dist/vuex-oidc.esm.js",
+  "peerDependencies": {
+    "vue": ">= 2.5.0",
+    "vuex": ">= 3.0.0",
+    "vue-router": ">= 3.0.0"
+  },
   "dependencies": {
-    "oidc-client": "^1.5.0-beta.4",
-    "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"
+    "oidc-client": "^1.5.0-beta.4"
   },
   "devDependencies": {
     "jsdom": "^11.11.0",
