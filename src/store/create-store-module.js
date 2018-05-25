@@ -1,8 +1,9 @@
-import { createOidcUserManager } from '../services/oidc-helpers'
+import { getOidcConfig, createOidcUserManager } from '../services/oidc-helpers'
 
-export default (oidcConfig) => {
+export default (oidcSettings) => {
 
-  const oidcUserManager = createOidcUserManager(oidcConfig)
+  const oidcConfig = getOidcConfig(oidcSettings)
+  const oidcUserManager = createOidcUserManager(oidcSettings)
 
   const state = {
     access_token: null,

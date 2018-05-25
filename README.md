@@ -14,7 +14,7 @@ npm install vuex-oidc --save
 ### 1) Create your oidc settings
 
 ```js
-export const oidcConfig = {
+export const oidcSettings = {
   authority: 'https://your_oidc_authority',
   client_id: 'your_client_id',
   redirect_uri: 'http://localhost:1337/oidc-callback',
@@ -33,11 +33,11 @@ Import and use vuex module. Is is created with a factory function that takes you
 ```js
 import { vuexOidcCreateStoreModule } from 'vuex-oidc'
 
-import { oidcConfig } from '@/config'
+import { oidcSettings } from '@/config'
 
 export default new Vuex.Store({
   modules: {
-    vuexOidcCreateStoreModule(oidcConfig)
+    vuexOidcCreateStoreModule(oidcSettings)
   }
 })
 
@@ -56,7 +56,7 @@ import { router } from '@/router'
 const routes = [
   ...yourApplicationsRoutes,
   {
-    path: '/oidc-callback', // Needs to match redirect_uri in you oidcConfig
+    path: '/oidc-callback', // Needs to match redirect_uri in you oidcSettings
     name: 'oidcCallback',
     component: vuexOidcCreateSignInCallbackComponent(store, router),
     meta {
@@ -121,6 +121,34 @@ export default {
 
 ```
 
+If you want to determin access on an app/layout level you can check if a user has access by checking oidcIsAuthenticated
+and isPublic of current route.
+
+```js
+<template>
+  <div v-if="hasAccess">
+    Protected content
+  </div>
+</template>
+
+<script>
+import { mapGetters } from 'vuex'
+
+export default {
+  name: 'App',
+  computed: {
+    ...mapGetters([
+      'oidcIsAuthenticated'
+    ]),
+    hasAccess: function() {
+      return this.oidcIsAuthenticated || this.$route.meta.isPublic
+    }
+  }
+}
+</script>
+```
+
+
 ### 6) Optional: display signed in user info
 
 Use vuex getter oidcUser.
@@ -172,7 +200,7 @@ Routes with meta.isPublic will not require authentication. If you have setup a s
 ### 8) Optional: setup silent renew callback
 
 ```js
-export const oidcConfig = {
+export const oidcSettings = {
   ...youOidcOtherSettings,
   silent_redirect_uri: 'http://localhost:1337/oidc-silent-renew.html',
   automaticSilentRenew: true // If true oidc-client will try to renew your token when it is about to expire
@@ -186,9 +214,9 @@ You have to make sure that you have an endpoint that matches the silent_redirect
 ```js
 import { vuexOidcProcessSilentSignInCallback } from 'vuex-oidc'
 
-import { oidcConfig } from '@/config'
+import { oidcSettings } from '@/config'
 
-vuexOidcProcessSilentSignInCallback(oidcConfig)
+vuexOidcProcessSilentSignInCallback(oidcSettings)
 
 ```
 

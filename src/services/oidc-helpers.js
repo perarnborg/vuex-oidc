@@ -14,17 +14,22 @@ const requiredConfigProperties = [
   'scope'
 ]
 
-export const createOidcUserManager = (oidcConfig) => {
+export const getOidcConfig = (oidcSettings) => {
+  return Object.assign(
+    {},
+    defaultOidcConfig,
+    oidcSettings
+  )
+}
+
+export const createOidcUserManager = (oidcSettings) => {
+  const oidcConfig = getOidcConfig(oidcSettings)
   requiredConfigProperties.forEach((requiredProperty) => {
     if (!oidcConfig[requiredProperty]) {
       throw new Error('Required oidc setting ' + requiredProperty + ' missing for creating UserManager')
     }
   })
-  return new UserManager(Object.assign(
-    {},
-    defaultOidcConfig,
-    oidcConfig
-  ))
+  return new UserManager(oidcConfig)
 }
 
 export const processSilentSignInCallback = (oidcConfig) => {
