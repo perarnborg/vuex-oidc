@@ -39,16 +39,24 @@ export default (oidcConfig) => {
       })
     },
     oidcSignInCallback(context) {
-      oidcUserManager.signinRedirectCallback().then(function (user) {
-        context.dispatch('oidcWasAuthenticated', user)
-      }).catch(function (err) {
-        if (err.message === 'No matching state found in storage') {
-        }
+      return new Promise((resolve, reject) => {
+        oidcUserManager.signinRedirectCallback()
+          .then(function (user) {
+            context.dispatch('oidcWasAuthenticated', user)
+            resolve(sessionStorage.getItem('vuex_oidc_active_route') || '/')
+          })
+          .catch(function (err) {
+            if (err.message === 'No matching state found in storage') {
+            }
+            reject(err)
+          })
       })
     },
     oidcWasAuthenticated(context, user) {
       context.commit('setOidcAuth', user)
-      context.dispatch('getOidcUser')
+      if (oidcConfig.loadUserInfo) {
+        context.dispatch('getOidcUser')
+      }
     },
     authenticateOidcSilent(context) {
       oidcUserManager.signinSilent().then(function (user) {
@@ -58,10 +66,12 @@ export default (oidcConfig) => {
     },
     oidcWasAuthenticatedSilent(context, user) {
       context.commit('setOidcAuth', user)
-      context.dispatch('getOidcUser')
+      if (oidcConfig.loadUserInfo) {
+        context.dispatch('getOidcUser')
+      }
     },
     getOidcUser (context) {
-      oidcUserManager.getOidcUser().then(function(user) {
+      oidcUserManager.getUser().then(function(user) {
         context.commit('setOidcUser', user.profile)
       }).catch(function(err) {
         console.log(err)

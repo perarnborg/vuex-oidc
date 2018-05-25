@@ -3,8 +3,8 @@ export default (store, router) => {
     name: 'VuexOidcSignInCallbackComponent',
     mounted() {
       store.dispatch('oidcSignInCallback')
-        .then(() => {
-          router.push(sessionStorage.getItem('vuex_oidc_active_route') || '/')
+        .then((redirectPath) => {
+          router.push(redirectPath)
         })
     }
   }
