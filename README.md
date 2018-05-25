@@ -28,15 +28,17 @@ Check out documentation for oidc-client to see all options: https://github.com/I
 
 ### 2) Setup vuex
 
-Import and use vuex module
+Import and use vuex module. Is is created with a factory function that takes foru oidc config and your vue-router as arguments.
 
 ```js
 import { vuexOidcCreateStoreModule } from 'vuex-oidc'
+
 import { oidcConfig } from '@/config'
+import { router } from '@/router'
 
 export default new Vuex.Store({
   modules: {
-    vuexOidcCreateStoreModule(oidcConfig)
+    vuexOidcCreateStoreModule(oidcConfig, router)
   }
 })
 
@@ -179,6 +181,7 @@ You have to make sure that you have an endpoint that matches the silent_redirect
 
 ```js
 import { vuexOidcProcessSilentSignInCallback } from 'vuex-oidc'
+
 import { oidcConfig } from '@/config'
 
 vuexOidcProcessSilentSignInCallback(oidcConfig)

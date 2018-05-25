@@ -1,6 +1,6 @@
 import { createOidcUserManager } from '../services/oidc-helpers'
 
-export default (oidcConfig) => {
+export default (oidcConfig, router) => {
 
   const oidcUserManager = createOidcUserManager(oidcConfig)
 
