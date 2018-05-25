@@ -28,7 +28,7 @@ Check out documentation for oidc-client to see all options: https://github.com/I
 
 ### 2) Setup vuex
 
-Import and use vuex module. Is is created with a factory function that takes foru oidc config and your vue-router as arguments.
+Import and use vuex module. Is is created with a factory function that takes your oidc config and your vue-router as arguments.
 
 ```js
 import { vuexOidcCreateStoreModule } from 'vuex-oidc'
@@ -46,15 +46,19 @@ export default new Vuex.Store({
 
 ### 3) Setup route for Open id callback
 
+Import and use callback component. Is is created with a factory function that takes your store as argument.
+
 ```js
-import { VuexOidcSigningCallbackComponent } from 'vuex-oidc'
+import { vuexOidcCreateSignInCallbackComponent } from 'vuex-oidc'
+
+import { store } from '@/store'
 
 const routes = [
   ...yourApplicationsRoutes,
   {
     path: '/oidc-callback', // Needs to match redirect_uri in you oidcConfig
     name: 'oidcCallback',
-    component: VuexOidcSigningCallbackComponent,
+    component: vuexOidcCreateSignInCallbackComponent(store),
     meta {
       isVuexOidcCallback: true
     }
