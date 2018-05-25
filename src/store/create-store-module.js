@@ -1,6 +1,6 @@
 import { createOidcUserManager } from '../services/oidc-helpers'
 
-export default (oidcConfig, router) => {
+export default (oidcConfig) => {
 
   const oidcUserManager = createOidcUserManager(oidcConfig)
 
@@ -23,54 +23,53 @@ export default (oidcConfig, router) => {
   }
 
   const actions = {
-    checkOidcAuthentication ({ getters, dispatch }, route) {
-      if (!getters.oidcIsAuthenticated && !route.meta.isOidcCallback) {
+    checkOidcAuthentication (context, route) {
+      if (!context.getters.oidcIsAuthenticated && !route.meta.isOidcCallback) {
         if (route.meta.isPublic) {
-          dispatch('authenticateOidcSilent')
+          context.dispatch('authenticateOidcSilent')
         } else if (oidcConfig.silent_redirect_uri){
-          dispatch('authenticateOidc', route)
+          context.dispatch('authenticateOidc', route)
         }
       }
     },
-    authenticateOidc ({ dispatch }, route) {
+    authenticateOidc (context, route) {
       sessionStorage.setItem('vuex_oidc_active_route', route.path)
       oidcUserManager.signinRedirect().catch(function(err) {
         console.log(err)
       })
     },
-    oidcSignInCallback({ dispatch }) {
+    oidcSignInCallback(context) {
       oidcUserManager.signinRedirectCallback().then(function (user) {
-        dispatch('oidcWasAuthenticated', user)
+        context.dispatch('oidcWasAuthenticated', user)
       }).catch(function (err) {
         if (err.message === 'No matching state found in storage') {
         }
       })
     },
-    oidcWasAuthenticated({ dispatch, commit }, user) {
-      commit('setOidcAuth', user)
-      dispatch('getOidcUser')
-      router.push(sessionStorage.getItem('vuex_oidc_active_route') || '/')
+    oidcWasAuthenticated(context, user) {
+      context.commit('setOidcAuth', user)
+      context.dispatch('getOidcUser')
     },
-    authenticateOidcSilent({ dispatch }) {
+    authenticateOidcSilent(context) {
       oidcUserManager.signinSilent().then(function (user) {
-        dispatch('oidcWasAuthenticatedSilent', user)
+        context.dispatch('oidcWasAuthenticatedSilent', user)
       }).catch(function () {
       })
     },
-    oidcWasAuthenticatedSilent({ dispatch, commit }, user) {
-      commit('setOidcAuth', user)
-      dispatch('getOidcUser')
+    oidcWasAuthenticatedSilent(context, user) {
+      context.commit('setOidcAuth', user)
+      context.dispatch('getOidcUser')
     },
-    getOidcUser ({ commit }) {
+    getOidcUser (context) {
       oidcUserManager.getOidcUser().then(function(user) {
-        commit('setOidcUser', user.profile)
+        context.commit('setOidcUser', user.profile)
       }).catch(function(err) {
         console.log(err)
       })
     },
-    signOutOidc ({ commit }) {
+    signOutOidc (context) {
       oidcUserManager.signoutRedirect().then(function(resp) {
-        commit('unsetOidcAuth')
+        context.commit('unsetOidcAuth')
       }).catch(function(err) {
         console.log(err)
       })
