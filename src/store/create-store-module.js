@@ -47,17 +47,12 @@ export default (oidcSettings) => {
             resolve(sessionStorage.getItem('vuex_oidc_active_route') || '/')
           })
           .catch(function (err) {
-            if (err.message === 'No matching state found in storage') {
-            }
             reject(err)
           })
       })
     },
     oidcWasAuthenticated(context, user) {
       context.commit('setOidcAuth', user)
-      if (oidcConfig.loadUserInfo) {
-        context.dispatch('getOidcUser')
-      }
     },
     authenticateOidcSilent(context) {
       oidcUserManager.signinSilent().then(function (user) {
@@ -67,13 +62,10 @@ export default (oidcSettings) => {
     },
     oidcWasAuthenticatedSilent(context, user) {
       context.commit('setOidcAuth', user)
-      if (oidcConfig.loadUserInfo) {
-        context.dispatch('getOidcUser')
-      }
     },
     getOidcUser (context) {
       oidcUserManager.getUser().then(function(user) {
-        context.commit('setOidcUser', user.profile)
+        context.commit('setOidcUser', user)
       }).catch(function(err) {
         console.log(err)
       })
@@ -91,9 +83,10 @@ export default (oidcSettings) => {
     setOidcAuth (state, user) {
       state.id_token = user.id_token
       state.access_token = user.access_token
+      state.user = user.profile
     },
     setOidcUser (state, user) {
-      state.user = user
+      state.user = user.profile
     },
     unsetOidcAuth (state) {
       state.token = null
