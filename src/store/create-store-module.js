@@ -24,14 +24,19 @@ export default (oidcSettings) => {
   }
 
   const actions = {
-    checkOidcAuthentication (context, route) {
-      if (!context.getters.oidcIsAuthenticated && !route.meta.isOidcCallback) {
-        if (route.meta.isPublic) {
-          context.dispatch('authenticateOidcSilent')
-        } else if (oidcConfig.silent_redirect_uri){
-          context.dispatch('authenticateOidc', route)
+    oidcCheckAccess (context, route) {
+      return new Promise((resolve) => {
+        let hasAccess = true
+        if (!context.getters.oidcIsAuthenticated && !route.meta.isOidcCallback) {
+          if (route.meta.isPublic) {
+            context.dispatch('authenticateOidcSilent')
+          } else if (oidcConfig.silent_redirect_uri){
+            context.dispatch('authenticateOidc', route)
+            hasAccess = false
+          }
         }
-      }
+        resolve(hasAccess)
+      })
     },
     authenticateOidc (context, route) {
       sessionStorage.setItem('vuex_oidc_active_route', route.path)
