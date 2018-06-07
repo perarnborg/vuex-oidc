@@ -31,15 +31,16 @@ export default (oidcSettings) => {
           if (route.meta.isPublic) {
             context.dispatch('authenticateOidcSilent')
           } else if (oidcConfig.silent_redirect_uri){
-            context.dispatch('authenticateOidc', route)
+            context.dispatch('authenticateOidc')
             hasAccess = false
           }
         }
         resolve(hasAccess)
       })
     },
-    authenticateOidc (context, route) {
-      sessionStorage.setItem('vuex_oidc_active_route', route.path)
+    authenticateOidc (context) {
+      const redirectPath = document.location.pathName + document.location.search + document.location.hash
+      sessionStorage.setItem('vuex_oidc_active_route', redirectPath)
       oidcUserManager.signinRedirect().catch(function(err) {
         console.log(err)
       })
