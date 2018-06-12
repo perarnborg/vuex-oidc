@@ -95,8 +95,9 @@ export default (oidcSettings) => {
       state.user = user.profile
     },
     unsetOidcAuth (state) {
-      state.token = null
-      state.token = null
+      state.id_token = null
+      state.access_token = null
+      state.user = null
     }
   }
 
