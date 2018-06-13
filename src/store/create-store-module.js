@@ -8,7 +8,8 @@ export default (oidcSettings) => {
   const state = {
     access_token: null,
     id_token: null,
-    user: null
+    user: null,
+    error: null
   }
 
   const getters = {
@@ -42,6 +43,7 @@ export default (oidcSettings) => {
       const redirectPath = document.location.pathname + (document.location.search || '') + (document.location.hash || '')
       sessionStorage.setItem('vuex_oidc_active_route', redirectPath)
       oidcUserManager.signinRedirect().catch(function(err) {
+        context.commit('setOidcError', err)
         console.log(err)
       })
     },
@@ -53,6 +55,7 @@ export default (oidcSettings) => {
             resolve(sessionStorage.getItem('vuex_oidc_active_route') || '/')
           })
           .catch(function (err) {
+            context.commit('setOidcError', err)
             reject(err)
           })
       })
@@ -90,6 +93,7 @@ export default (oidcSettings) => {
       state.id_token = user.id_token
       state.access_token = user.access_token
       state.user = user.profile
+      state.error = null
     },
     setOidcUser (state, user) {
       state.user = user.profile
@@ -98,6 +102,9 @@ export default (oidcSettings) => {
       state.id_token = null
       state.access_token = null
       state.user = null
+    },
+    setOidcError (state, error) {
+      state.error = error
     }
   }
 
