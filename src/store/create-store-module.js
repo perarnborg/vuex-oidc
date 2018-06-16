@@ -21,6 +21,12 @@ export default (oidcSettings) => {
     },
     oidcUser: (state) => {
       return state.user
+    },
+    oidcAccessToken: (state) => {
+      return state.access_token
+    },
+    oidcIdToken: (state) => {
+      return state.id_token
     }
   }
 
