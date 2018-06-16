@@ -30,8 +30,10 @@ export default (oidcSettings) => {
         let hasAccess = true
         if (!context.getters.oidcIsAuthenticated && !route.meta.isOidcCallback) {
           if (route.meta.isPublic) {
-            context.dispatch('authenticateOidcSilent')
-          } else if (oidcConfig.silent_redirect_uri){
+            if (oidcConfig.silent_redirect_uri) {
+              context.dispatch('authenticateOidcSilent')
+            }
+          } else {
             context.dispatch('authenticateOidc')
             hasAccess = false
           }
