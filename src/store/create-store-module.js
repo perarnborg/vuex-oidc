@@ -1,4 +1,5 @@
 import { getOidcConfig, createOidcUserManager } from '../services/oidc-helpers'
+import { dispatchAuthenticationBrowserEvent } from '../services/browser-event'
 
 export default (oidcSettings) => {
 
@@ -70,6 +71,7 @@ export default (oidcSettings) => {
     },
     oidcWasAuthenticated(context, user) {
       context.commit('setOidcAuth', user)
+      dispatchAuthenticationBrowserEvent()
     },
     authenticateOidcSilent(context) {
       oidcUserManager.signinSilent().then(function (user) {
@@ -79,6 +81,7 @@ export default (oidcSettings) => {
     },
     oidcWasAuthenticatedSilent(context, user) {
       context.commit('setOidcAuth', user)
+      dispatchAuthenticationBrowserEvent()
     },
     getOidcUser (context) {
       oidcUserManager.getUser().then(function(user) {
