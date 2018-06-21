@@ -3,12 +3,12 @@ function createCustomEvent(eventName, detail, params) {
   const prefixedEventName = 'vuexoidc:' + eventName
 
   if (typeof window.CustomEvent === 'function') {
-    params = { Object.assign({}, params, detail: detail) }
+    params = Object.assign({}, params, {detail: detail})
     return new window.CustomEvent(prefixedEventName, params)
   }
 
   params = params || { bubbles: false, cancelable: false }
-  params = { Object.assign({}, params, detail: detail) }
+  params = Object.assign({}, params, {detail: detail})
   var evt = document.createEvent('CustomEvent')
   evt.initCustomEvent(
     prefixedEventName,
@@ -23,7 +23,7 @@ function dispatchCustomBrowserEvent(eventName, detail = {}, params = {}) {
   if (window) {
     const event = createCustomEvent(
       eventName,
-      { Object.assign({}, detail) },
+      Object.assign({}, detail),
       params
     )
     window.dispatchEvent(event)
