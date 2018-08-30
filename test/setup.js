@@ -14,4 +14,8 @@ window.localStorage = new StorageShim();
 
 global.localStorage = window.localStorage;
 
+window.sessionStorage = new StorageShim();
+
+global.sessionStorage = window.sessionStorage;
+
 global.XMLHttpRequest = sinon.useFakeXMLHttpRequest();
