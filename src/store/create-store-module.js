@@ -10,6 +10,7 @@ export default (oidcSettings) => {
     access_token: null,
     id_token: null,
     user: null,
+    is_checked: false,
     error: null
   }
 
@@ -28,6 +29,9 @@ export default (oidcSettings) => {
     },
     oidcIdToken: (state) => {
       return state.id_token
+    },
+    oidcAuthenticationIsChecked: (state) => {
+      return state.is_checked
     }
   }
 
@@ -61,10 +65,12 @@ export default (oidcSettings) => {
         oidcUserManager.signinRedirectCallback()
           .then(function (user) {
             context.dispatch('oidcWasAuthenticated', user)
+            context.commit('setOidcAuthIsChecked')
             resolve(sessionStorage.getItem('vuex_oidc_active_route') || '/')
           })
           .catch(function (err) {
             context.commit('setOidcError', err)
+            context.commit('setOidcAuthIsChecked')
             reject(err)
           })
       })
@@ -76,7 +82,9 @@ export default (oidcSettings) => {
     authenticateOidcSilent(context) {
       oidcUserManager.signinSilent().then(function (user) {
         context.dispatch('oidcWasAuthenticatedSilent', user)
+        context.commit('setOidcAuthIsChecked')
       }).catch(function () {
+        context.commit('setOidcAuthIsChecked')
       })
     },
     oidcWasAuthenticatedSilent(context, user) {
@@ -113,6 +121,9 @@ export default (oidcSettings) => {
       state.id_token = null
       state.access_token = null
       state.user = null
+    },
+    setOidcAuthIsChecked (state) {
+      state.is_checked = true
     },
     setOidcError (state, error) {
       state.error = error
