@@ -45,15 +45,15 @@ export default (oidcSettings) => {
               context.dispatch('authenticateOidcSilent')
             }
           } else {
-            context.dispatch('authenticateOidc')
+            context.dispatch('authenticateOidc', route.path)
             hasAccess = false
           }
         }
         resolve(hasAccess)
       })
     },
-    authenticateOidc (context) {
-      const redirectPath = document.location.pathname + (document.location.search || '') + (document.location.hash || '')
+    authenticateOidc (context, redirectPath) {
+      redirectPath += (document.location.search || '') + (document.location.hash || '')
       sessionStorage.setItem('vuex_oidc_active_route', redirectPath)
       oidcUserManager.signinRedirect().catch(function(err) {
         context.commit('setOidcError', err)
