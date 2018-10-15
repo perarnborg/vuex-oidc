@@ -1,10 +1,14 @@
 import { getOidcConfig, createOidcUserManager } from '../services/oidc-helpers'
 import { dispatchAuthenticationBrowserEvent } from '../services/browser-event'
 
-export default (oidcSettings) => {
+export default (oidcSettings, moduleOptions = {}) => {
 
   const oidcConfig = getOidcConfig(oidcSettings)
   const oidcUserManager = createOidcUserManager(oidcSettings)
+  moduleOptions = {
+    namespaced: false,
+    ...moduleOptions
+  }
 
   const state = {
     access_token: null,
@@ -131,6 +135,7 @@ export default (oidcSettings) => {
   }
 
   return {
+    ...moduleOptions,
     state,
     getters,
     actions,
