@@ -5,10 +5,10 @@ export default (oidcSettings, moduleOptions = {}) => {
 
   const oidcConfig = getOidcConfig(oidcSettings)
   const oidcUserManager = createOidcUserManager(oidcSettings)
-  moduleOptions = {
-    namespaced: false,
-    ...moduleOptions
-  }
+  moduleOptions = Object.assign(
+    {namespaced: false},
+    moduleOptions
+  )
 
   const state = {
     access_token: null,
@@ -134,11 +134,14 @@ export default (oidcSettings, moduleOptions = {}) => {
     }
   }
 
-  return {
-    ...moduleOptions,
-    state,
-    getters,
-    actions,
-    mutations
-  }
+  return Object.assign(
+    {},
+    moduleOptions,
+    {
+      state,
+      getters,
+      actions,
+      mutations
+    }
+  )
 }
