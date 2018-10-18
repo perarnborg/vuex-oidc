@@ -36,6 +36,9 @@ export default (oidcSettings, moduleOptions = {}) => {
     },
     oidcAuthenticationIsChecked: (state) => {
       return state.is_checked
+    },
+    oidcError: (state) => {
+      return state.error
     }
   }
 
@@ -130,7 +133,7 @@ export default (oidcSettings, moduleOptions = {}) => {
       state.is_checked = true
     },
     setOidcError (state, error) {
-      state.error = error
+      state.error = error && error.message ? error.message : error
     }
   }
 
