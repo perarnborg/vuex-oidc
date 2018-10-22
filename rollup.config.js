@@ -1,6 +1,7 @@
 // import resolve from 'rollup-plugin-node-resolve';
 // import commonjs from 'rollup-plugin-commonjs';
 import pkg from './package.json';
+import babel from 'rollup-plugin-babel';
 // import VuePlugin from 'rollup-plugin-vue'
 
 export default [
@@ -31,9 +32,12 @@ export default [
 			{ file: pkg.main, format: 'cjs' },
 			{ file: pkg.module, format: 'es' }
 		],
-		// plugins: [
-		// 	VuePlugin()
-		// ],
+		plugins: [
+		  // VuePlugin()
+		  babel({
+			  exclude: ['node_modules/**']
+			})
+		],
   	external: [ 'oidc-client' ]
 	}
 ];
