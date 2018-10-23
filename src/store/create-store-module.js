@@ -32,10 +32,10 @@ export default (oidcSettings, moduleOptions = {}) => {
       return state.user
     },
     oidcAccessToken: (state) => {
-      return state.access_token
+      return tokenIsExpired(state.access_token) ? null : state.access_token
     },
     oidcIdToken: (state) => {
-      return state.id_token
+      return tokenIsExpired(state.id_token) ? null : state.id_token
     },
     oidcAuthenticationIsChecked: (state) => {
       return state.is_checked
