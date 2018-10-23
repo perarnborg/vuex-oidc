@@ -1,3 +1,4 @@
+import { parseJwt } from './utils'
 import { UserManager, WebStorageStateStore } from 'oidc-client'
 
 const defaultOidcConfig = {
@@ -41,4 +42,9 @@ export const processSilentSignInCallback = (oidcConfig) => {
       automaticSilentRenew: false
     }
   )).signinSilentCallback()
+}
+
+export const tokenIsExpired = (token) => {
+  const parsed = parseJwt(token)
+  return parsed.exp * 1000 < new Date().getTime()
 }

@@ -1,4 +1,4 @@
-import { getOidcConfig, createOidcUserManager } from '../services/oidc-helpers'
+import { getOidcConfig, createOidcUserManager, tokenIsExpired } from '../services/oidc-helpers'
 import { dispatchAuthenticationBrowserEvent } from '../services/browser-event'
 
 export default (oidcSettings, moduleOptions = {}) => {
@@ -20,7 +20,10 @@ export default (oidcSettings, moduleOptions = {}) => {
 
   const getters = {
     oidcIsAuthenticated: (state) => {
-      if (state.access_token || state.id_token) {
+      if (state.access_token && !tokenIsExpired(state.access_token)) {
+        return true
+      }
+      if (state.id_token && !tokenIsExpired(state.id_token)) {
         return true
       }
       return false
