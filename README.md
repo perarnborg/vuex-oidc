@@ -6,6 +6,9 @@ Vue.js implementation of oidc-client using vuex and vue-router.
 
 See the wiki for doumentation on how to implement vue-router: https://github.com/perarnborg/vuex-oidc/wiki
 
+## Example
+
+An example of an implementation can be found in https://github.com/perarnborg/vuex-oidc-example
 
 ## License
 
