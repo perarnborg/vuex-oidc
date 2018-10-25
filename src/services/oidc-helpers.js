@@ -1,4 +1,4 @@
-import { parseJwt } from './utils'
+import { objectAssign, parseJwt } from './utils'
 import { UserManager, WebStorageStateStore } from 'oidc-client'
 
 const defaultOidcConfig = {
@@ -16,11 +16,10 @@ const requiredConfigProperties = [
 ]
 
 export const getOidcConfig = (oidcSettings) => {
-  return Object.assign(
-    {},
+  return objectAssign([
     defaultOidcConfig,
     oidcSettings
-  )
+  ])
 }
 
 export const createOidcUserManager = (oidcSettings) => {
@@ -34,14 +33,13 @@ export const createOidcUserManager = (oidcSettings) => {
 }
 
 export const processSilentSignInCallback = (oidcConfig) => {
-  createOidcUserManager(Object.assign(
-    {},
+  createOidcUserManager(objectAssign([
     oidcConfig,
     {
       silent_redirect_uri: null,
       automaticSilentRenew: false
     }
-  )).signinSilentCallback()
+  ])).signinSilentCallback()
 }
 
 export const tokenIsExpired = (token) => {

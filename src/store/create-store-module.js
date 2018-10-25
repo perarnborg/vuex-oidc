@@ -1,3 +1,4 @@
+import { objectAssign } from '../services/utils'
 import { getOidcConfig, createOidcUserManager, tokenIsExpired } from '../services/oidc-helpers'
 import { dispatchAuthenticationBrowserEvent } from '../services/browser-event'
 
@@ -5,10 +6,10 @@ export default (oidcSettings, moduleOptions = {}) => {
 
   const oidcConfig = getOidcConfig(oidcSettings)
   const oidcUserManager = createOidcUserManager(oidcSettings)
-  moduleOptions = Object.assign(
+  moduleOptions = objectAssign([
     {namespaced: false},
     moduleOptions
-  )
+  ])
 
   const state = {
     access_token: null,
@@ -140,8 +141,7 @@ export default (oidcSettings, moduleOptions = {}) => {
     }
   }
 
-  return Object.assign(
-    {},
+  return objectAssign([
     moduleOptions,
     {
       state,
@@ -149,5 +149,5 @@ export default (oidcSettings, moduleOptions = {}) => {
       actions,
       mutations
     }
-  )
+  ])
 }
