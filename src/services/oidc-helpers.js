@@ -42,10 +42,18 @@ export const processSilentSignInCallback = (oidcConfig) => {
   ])).signinSilentCallback()
 }
 
-export const tokenIsExpired = (token) => {
+export const tokenExp = (token) => {
   if (token) {
     const parsed = parseJwt(token)
-    return parsed.exp * 1000 < new Date().getTime()
+    return parsed.exp * 1000
+  }
+  return null
+}
+
+export const tokenIsExpired = (token) => {
+  const tokenExpiryTime = tokenExp(token)
+  if (tokenExpiryTime) {
+    return tokenExpiryTime < new Date().getTime()
   }
   return false
 }

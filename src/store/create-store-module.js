@@ -1,5 +1,5 @@
 import { objectAssign } from '../services/utils'
-import { getOidcConfig, createOidcUserManager, tokenIsExpired } from '../services/oidc-helpers'
+import { getOidcConfig, createOidcUserManager, tokenIsExpired, tokenExp } from '../services/oidc-helpers'
 import { dispatchAuthenticationBrowserEvent } from '../services/browser-event'
 
 export default (oidcSettings, moduleOptions = {}) => {
@@ -35,8 +35,14 @@ export default (oidcSettings, moduleOptions = {}) => {
     oidcAccessToken: (state) => {
       return tokenIsExpired(state.access_token) ? null : state.access_token
     },
+    oidcAccessTokenExp: (state) => {
+      return tokenExp(state.access_token)
+    },
     oidcIdToken: (state) => {
       return tokenIsExpired(state.id_token) ? null : state.id_token
+    },
+    oidcIdTokenExp: (state) => {
+      return tokenExp(state.id_token)
     },
     oidcAuthenticationIsChecked: (state) => {
       return state.is_checked
