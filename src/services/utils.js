@@ -12,3 +12,7 @@ export const parseJwt = (token) => {
   var base64 = base64Url.replace('-', '+').replace('_', '/')
   return JSON.parse(window.atob(base64))
 }
+
+export const firstLetterUppercase = (string) => {
+  return string && string.length > 0 ? string.charAt(0).toUpperCase() + string.slice(1) : ''
+}

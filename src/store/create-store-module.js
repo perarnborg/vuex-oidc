@@ -1,4 +1,4 @@
-import { objectAssign } from '../services/utils'
+import { objectAssign, firstLetterUppercase } from '../services/utils'
 import { getOidcConfig, createOidcUserManager, tokenIsExpired, tokenExp } from '../services/oidc-helpers'
 import { dispatchAuthenticationBrowserEvent } from '../services/browser-event'
 
@@ -114,6 +114,18 @@ export default (oidcSettings, moduleOptions = {}) => {
       }).catch(function(err) {
         console.log(err)
       })
+    },
+    addOidcEventListener (payload) {
+      const addFn = oidcUserManager.events['add' + firstLetterUppercase(payload.eventName)]
+      if (typeof addFn === typeof payload.eventListener === 'function') {
+        addFn(payload.eventListener)
+      }
+    },
+    removeOidcEventListener (payload) {
+      const removeFn = oidcUserManager.events['remove' + firstLetterUppercase(payload.eventName)]
+      if (typeof removeFn === typeof payload.eventListener === 'function') {
+        removeFn(payload.eventListener)
+      }
     },
     signOutOidc (context) {
       oidcUserManager.signoutRedirect().then(function(resp) {
