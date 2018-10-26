@@ -1,6 +1,6 @@
 # vuex-oidc
 
-Vue.js implementation of oidc-client using vuex and vue-router.
+Vue.js implementation of oidc-client (https://github.com/IdentityModel/oidc-client-js) using vuex and vue-router.
 
 ## Documentation
 
