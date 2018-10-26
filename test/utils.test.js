@@ -14,3 +14,9 @@ describe('utils.objectAssign', function() {
     assert.notEqual(merged.prop1, objB.prop1)
   });
 });
+
+describe('utils.firstLetterUppercase', function() {
+  it('return a string with first letter uppercased', function() {
+    assert.equal(vuexOidcUtils.firstLetterUppercase('userLoaded'), 'UserLoaded')
+  });
+});

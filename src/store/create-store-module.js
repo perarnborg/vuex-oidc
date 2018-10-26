@@ -117,13 +117,13 @@ export default (oidcSettings, moduleOptions = {}) => {
     },
     addOidcEventListener (payload) {
       const addFn = oidcUserManager.events['add' + firstLetterUppercase(payload.eventName)]
-      if (typeof addFn === typeof payload.eventListener === 'function') {
+      if (typeof addFn === 'function' && typeof payload.eventListener === 'function') {
         addFn(payload.eventListener)
       }
     },
     removeOidcEventListener (payload) {
       const removeFn = oidcUserManager.events['remove' + firstLetterUppercase(payload.eventName)]
-      if (typeof removeFn === typeof payload.eventListener === 'function') {
+      if (typeof removeFn === 'function' && typeof payload.eventListener === 'function') {
         removeFn(payload.eventListener)
       }
     },
