@@ -2,7 +2,7 @@ import { objectAssign, firstLetterUppercase } from '../services/utils'
 import { getOidcConfig, createOidcUserManager, tokenIsExpired, tokenExp } from '../services/oidc-helpers'
 import { dispatchAuthenticationBrowserEvent } from '../services/browser-event'
 
-export default (oidcSettings, moduleOptions = {}) => {
+export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
 
   const oidcConfig = getOidcConfig(oidcSettings)
   const oidcUserManager = createOidcUserManager(oidcSettings)
@@ -10,6 +10,14 @@ export default (oidcSettings, moduleOptions = {}) => {
     {namespaced: false},
     moduleOptions
   ])
+
+  Object.keys(oidcEventListeners).forEach(eventName => {
+    const addFnName = 'add' + firstLetterUppercase(eventName)
+    const eventListener = oidcEventListeners[eventName]
+    if (typeof oidcUserManager.events[addFnName] === 'function' && typeof eventListener === 'function') {
+      oidcUserManager.events[addFnName](eventListener)
+    }
+  })
 
   const state = {
     access_token: null,
