@@ -5,7 +5,7 @@ const oidcConfig = require('./oidcTestConfig')
 describe('oidcHelper.createOidcUserManager', function() {
   it('should create a UserManager', function() {
     const userManager = vuexOidc.vuexOidcCreateUserManager(oidcConfig)
-    assert(typeof userManager, 'object')
+    assert.equal(typeof userManager, 'object')
   });
   [
     'authority',
