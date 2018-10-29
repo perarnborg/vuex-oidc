@@ -27,15 +27,19 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
     error: null
   }
 
+  const isAuthenticated = (state) => {
+    if (state.access_token && !tokenIsExpired(state.access_token)) {
+      return true
+    }
+    if (state.id_token && !tokenIsExpired(state.id_token)) {
+      return true
+    }
+    return false
+  }
+
   const getters = {
     oidcIsAuthenticated: (state) => {
-      if (state.access_token && !tokenIsExpired(state.access_token)) {
-        return true
-      }
-      if (state.id_token && !tokenIsExpired(state.id_token)) {
-        return true
-      }
-      return false
+      return isAuthenticated(state)
     },
     oidcUser: (state) => {
       return state.user
@@ -64,7 +68,7 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
     oidcCheckAccess (context, route) {
       return new Promise((resolve) => {
         let hasAccess = true
-        if (!context.getters.oidcIsAuthenticated && !route.meta.isOidcCallback) {
+        if (!isAuthenticated(context.state) && !route.meta.isOidcCallback) {
           if (route.meta.isPublic) {
             if (oidcConfig.silent_redirect_uri) {
               context.dispatch('authenticateOidcSilent')
