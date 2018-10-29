@@ -32,14 +32,8 @@ export const createOidcUserManager = (oidcSettings) => {
   return new UserManager(oidcConfig)
 }
 
-export const processSilentSignInCallback = (oidcConfig) => {
-  createOidcUserManager(objectAssign([
-    oidcConfig,
-    {
-      silent_redirect_uri: null,
-      automaticSilentRenew: false
-    }
-  ])).signinSilentCallback()
+export const processSilentSignInCallback = () => {
+  createOidcUserManager().signinSilentCallback()
 }
 
 export const tokenExp = (token) => {
