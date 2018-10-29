@@ -102,6 +102,9 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
     },
     oidcWasAuthenticated(context, user) {
       context.commit('setOidcAuth', user)
+      if (oidcSettings.automaticSilentRenew) {
+        oidcUserManager.events.addAccessTokenExpiring(() => { context.dispatch('authenticateOidcSilent') })
+      }
       dispatchAuthenticationBrowserEvent()
     },
     authenticateOidcSilent(context) {

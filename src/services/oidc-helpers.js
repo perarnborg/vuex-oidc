@@ -3,8 +3,7 @@ import { UserManager, WebStorageStateStore } from 'oidc-client'
 
 const defaultOidcConfig = {
   userStore: new WebStorageStateStore(),
-  loadUserInfo: true,
-  automaticSilentRenew: false
+  loadUserInfo: true
 }
 
 const requiredConfigProperties = [
@@ -18,7 +17,8 @@ const requiredConfigProperties = [
 export const getOidcConfig = (oidcSettings) => {
   return objectAssign([
     defaultOidcConfig,
-    oidcSettings
+    oidcSettings,
+    { automaticSilentRenew: false } // automaticSilentRenew is handled in vuex and not by user manager
   ])
 }
 
@@ -32,14 +32,8 @@ export const createOidcUserManager = (oidcSettings) => {
   return new UserManager(oidcConfig)
 }
 
-export const processSilentSignInCallback = (oidcConfig) => {
-  createOidcUserManager(objectAssign([
-    oidcConfig,
-    {
-      silent_redirect_uri: null,
-      automaticSilentRenew: false
-    }
-  ])).signinSilentCallback()
+export const processSilentSignInCallback = () => {
+  createOidcUserManager().signinSilentCallback()
 }
 
 export const tokenExp = (token) => {
