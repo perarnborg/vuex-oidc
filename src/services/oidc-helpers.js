@@ -45,7 +45,7 @@ export const processSilentSignInCallback = (oidcConfig) => {
 export const tokenExp = (token) => {
   if (token) {
     const parsed = parseJwt(token)
-    return parsed.exp * 1000
+    return parsed.exp ? parsed.exp * 1000 : null
   }
   return null
 }
