@@ -33,7 +33,7 @@ export const createOidcUserManager = (oidcSettings) => {
 }
 
 export const processSilentSignInCallback = () => {
-  createOidcUserManager().signinSilentCallback()
+  new UserManager().signinSilentCallback()
 }
 
 export const tokenExp = (token) => {

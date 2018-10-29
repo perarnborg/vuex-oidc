@@ -1,6 +1,6 @@
 export const objectAssign = (objects) => {
   return objects.reduce(function (r, o) {
-    Object.keys(o).forEach(function (k) {
+    Object.keys(o || {}).forEach(function (k) {
       r[k] = o[k];
     });
     return r;
