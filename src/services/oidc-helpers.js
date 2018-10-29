@@ -3,8 +3,7 @@ import { UserManager, WebStorageStateStore } from 'oidc-client'
 
 const defaultOidcConfig = {
   userStore: new WebStorageStateStore(),
-  loadUserInfo: true,
-  automaticSilentRenew: false
+  loadUserInfo: true
 }
 
 const requiredConfigProperties = [
@@ -18,7 +17,8 @@ const requiredConfigProperties = [
 export const getOidcConfig = (oidcSettings) => {
   return objectAssign([
     defaultOidcConfig,
-    oidcSettings
+    oidcSettings,
+    { automaticSilentRenew: false } // automaticSilentRenew is handled in vuex and not by user manager
   ])
 }
 
