@@ -8,9 +8,14 @@ export const objectAssign = (objects) => {
 }
 
 export const parseJwt = (token) => {
-  var base64Url = token.split('.')[1]
-  var base64 = base64Url.replace('-', '+').replace('_', '/')
-  return JSON.parse(window.atob(base64))
+  try {
+    var base64Url = token.split('.')[1]
+    var base64 = base64Url.replace('-', '+').replace('_', '/')
+    return JSON.parse(window.atob(base64))
+  }
+  catch(error) {
+    return {}
+  }
 }
 
 export const firstLetterUppercase = (string) => {
