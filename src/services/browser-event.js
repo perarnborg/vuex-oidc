@@ -1,16 +1,16 @@
 import { objectAssign } from './utils'
 
 // Use native custom event or DIY for IE
-function createCustomEvent(eventName, detail, params) {
+function createCustomEvent (eventName, detail, params) {
   const prefixedEventName = 'vuexoidc:' + eventName
 
   if (typeof window.CustomEvent === 'function') {
-    params = objectAssign([params, {detail: detail}])
+    params = objectAssign([params, { detail: detail }])
     return new window.CustomEvent(prefixedEventName, params)
   }
 
   params = params || { bubbles: false, cancelable: false }
-  params = objectAssign([params, {detail: detail}])
+  params = objectAssign([params, { detail: detail }])
   var evt = document.createEvent('CustomEvent')
   evt.initCustomEvent(
     prefixedEventName,
@@ -21,7 +21,7 @@ function createCustomEvent(eventName, detail, params) {
   return evt
 }
 
-export function dispatchCustomBrowserEvent(eventName, detail = {}, params = {}) {
+export function dispatchCustomBrowserEvent (eventName, detail = {}, params = {}) {
   if (window) {
     const event = createCustomEvent(
       eventName,

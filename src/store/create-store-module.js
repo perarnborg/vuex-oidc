@@ -1,13 +1,12 @@
-import { objectAssign, firstLetterUppercase } from '../services/utils'
+import { objectAssign } from '../services/utils'
 import { getOidcConfig, createOidcUserManager, addUserManagerEventListener, removeUserManagerEventListener, tokenIsExpired, tokenExp } from '../services/oidc-helpers'
 import { dispatchCustomBrowserEvent } from '../services/browser-event'
 
 export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
-
   const oidcConfig = getOidcConfig(oidcSettings)
   const oidcUserManager = createOidcUserManager(oidcSettings)
   moduleOptions = objectAssign([
-    {namespaced: false},
+    { namespaced: false },
     moduleOptions
   ])
 
@@ -80,14 +79,14 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
           return
         }
         let hasAccess = true
-        let getUserPromise = new Promise(resolveUser => { resolveUser(null) })
+        let getUserPromise = new Promise(resolve => { resolve(null) })
         let isAuthenticatedInStore = isAuthenticated(context.state)
         if (isAuthenticatedInStore) {
-          getUserPromise = new Promise(resolveUser => {
-            oidcUserManager.getUser().then(function(user) {
-              resolveUser(user)
+          getUserPromise = new Promise(resolve => {
+            oidcUserManager.getUser().then(user => {
+              resolve(user)
             }).catch(() => {
-              resolveUser(null)
+              resolve(null)
             })
           })
         }
@@ -110,36 +109,34 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
       })
     },
     authenticateOidc (context, redirectPath) {
-      redirectPath += (document.location.search || '') + (document.location.hash || '')
+      redirectPath += (document.location.search || '') + (document.location.hash || '')
       sessionStorage.setItem('vuex_oidc_active_route', redirectPath)
-      oidcUserManager.signinRedirect().catch(function(err) {
+      oidcUserManager.signinRedirect().catch(err => {
         context.commit('setOidcError', err)
       })
     },
-    oidcSignInCallback(context) {
+    oidcSignInCallback (context) {
       return new Promise((resolve, reject) => {
         oidcUserManager.signinRedirectCallback()
-          .then(function (user) {
+          .then(user => {
             context.dispatch('oidcWasAuthenticated', user)
             context.commit('setOidcAuthIsChecked')
             resolve(sessionStorage.getItem('vuex_oidc_active_route') || '/')
           })
-          .catch(function (err) {
+          .catch(err => {
             context.commit('setOidcError', err)
             context.commit('setOidcAuthIsChecked')
             reject(err)
           })
       })
     },
-    authenticateOidcSilent(context) {
-      oidcUserManager.signinSilent().then(function (user) {
+    authenticateOidcSilent (context) {
+      oidcUserManager.signinSilent().then(user => {
         context.dispatch('oidcWasAuthenticated', user)
-        context.commit('setOidcAuthIsChecked')
-      }).catch(function () {
         context.commit('setOidcAuthIsChecked')
       })
     },
-    oidcWasAuthenticated(context, user) {
+    oidcWasAuthenticated (context, user) {
       context.commit('setOidcAuth', user)
       if (!context.state.events_are_bound) {
         oidcUserManager.events.addAccessTokenExpired(() => { context.commit('unsetOidcAuth') })
@@ -150,9 +147,8 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
       }
     },
     getOidcUser (context) {
-      oidcUserManager.getUser().then(function(user) {
+      oidcUserManager.getUser().then(user => {
         context.commit('setOidcUser', user)
-      }).catch(function(err) {
       })
     },
     addOidcEventListener (context, payload) {
@@ -162,9 +158,8 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
       removeUserManagerEventListener(oidcUserManager, payload.eventName, payload.eventListener)
     },
     signOutOidc (context) {
-      oidcUserManager.signoutRedirect().then(function(resp) {
+      oidcUserManager.signoutRedirect().then(() => {
         context.commit('unsetOidcAuth')
-      }).catch(function(err) {
       })
     }
   }
