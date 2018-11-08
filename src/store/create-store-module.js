@@ -24,6 +24,7 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
     id_token: null,
     user: null,
     is_checked: false,
+    events_are_bound: false,
     error: null
   }
 
@@ -119,23 +120,23 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
           })
       })
     },
-    oidcWasAuthenticated(context, user) {
-      context.commit('setOidcAuth', user)
-      if (oidcSettings.automaticSilentRenew) {
-        oidcUserManager.events.addAccessTokenExpiring(() => { context.dispatch('authenticateOidcSilent') })
-      }
-      dispatchAuthenticationBrowserEvent()
-    },
     authenticateOidcSilent(context) {
       oidcUserManager.signinSilent().then(function (user) {
-        context.dispatch('oidcWasAuthenticatedSilent', user)
+        context.dispatch('oidcWasAuthenticated', user)
         context.commit('setOidcAuthIsChecked')
       }).catch(function () {
         context.commit('setOidcAuthIsChecked')
       })
     },
-    oidcWasAuthenticatedSilent(context, user) {
+    oidcWasAuthenticated(context, user) {
       context.commit('setOidcAuth', user)
+      if (!context.state.events_are_bound) {
+        oidcUserManager.events.addAccessTokenExpired(() => { context.commit('unsetOidcAuth') })
+        if (oidcSettings.automaticSilentRenew) {
+          oidcUserManager.events.addAccessTokenExpiring(() => { context.dispatch('authenticateOidcSilent') })
+        }
+        context.commit('setOidcEventsAreBound')
+      }
       dispatchAuthenticationBrowserEvent()
     },
     getOidcUser (context) {
@@ -181,6 +182,9 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
     },
     setOidcAuthIsChecked (state) {
       state.is_checked = true
+    },
+    setOidcEventsAreBound (state) {
+      state.events_are_bound = true
     },
     setOidcError (state, error) {
       state.error = error && error.message ? error.message : error
