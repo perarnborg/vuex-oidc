@@ -21,7 +21,7 @@ function createCustomEvent(eventName, detail, params) {
   return evt
 }
 
-function dispatchCustomBrowserEvent(eventName, detail = {}, params = {}) {
+export function dispatchCustomBrowserEvent(eventName, detail = {}, params = {}) {
   if (window) {
     const event = createCustomEvent(
       eventName,
@@ -30,8 +30,4 @@ function dispatchCustomBrowserEvent(eventName, detail = {}, params = {}) {
     )
     window.dispatchEvent(event)
   }
-}
-
-export function dispatchAuthenticationBrowserEvent() {
-  dispatchCustomBrowserEvent('wasauthenticated')
 }

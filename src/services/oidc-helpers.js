@@ -1,4 +1,4 @@
-import { objectAssign, parseJwt } from './utils'
+import { objectAssign, parseJwt, firstLetterUppercase } from './utils'
 import { UserManager, WebStorageStateStore } from 'oidc-client'
 
 const defaultOidcConfig = {
@@ -30,6 +30,20 @@ export const createOidcUserManager = (oidcSettings) => {
     }
   })
   return new UserManager(oidcConfig)
+}
+
+export const addUserManagerEventListener = (oidcUserManager, eventName, eventListener) => {
+  const addFnName = 'add' + firstLetterUppercase(eventName)
+  if (typeof oidcUserManager.events[addFnName] === 'function' && typeof eventListener === 'function') {
+    oidcUserManager.events[addFnName](eventListener)
+  }
+}
+
+export const removeUserManagerEventListener = (oidcUserManager, eventName, eventListener) => {
+  const removeFnName = 'remove' + firstLetterUppercase(eventName)
+  if (typeof oidcUserManager.events[removeFnName] === 'function' && typeof eventListener === 'function') {
+    oidcUserManager.events[removeFnName](eventListener)
+  }
 }
 
 export const processSilentSignInCallback = () => {

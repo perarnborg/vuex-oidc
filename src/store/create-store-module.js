@@ -1,6 +1,6 @@
 import { objectAssign, firstLetterUppercase } from '../services/utils'
-import { getOidcConfig, createOidcUserManager, tokenIsExpired, tokenExp } from '../services/oidc-helpers'
-import { dispatchAuthenticationBrowserEvent } from '../services/browser-event'
+import { getOidcConfig, createOidcUserManager, addUserManagerEventListener, removeUserManagerEventListener, tokenIsExpired, tokenExp } from '../services/oidc-helpers'
+import { dispatchCustomBrowserEvent } from '../services/browser-event'
 
 export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
 
@@ -11,12 +11,22 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
     moduleOptions
   ])
 
+  // Add event listeners passed into factory function
   Object.keys(oidcEventListeners).forEach(eventName => {
-    const addFnName = 'add' + firstLetterUppercase(eventName)
-    const eventListener = oidcEventListeners[eventName]
-    if (typeof oidcUserManager.events[addFnName] === 'function' && typeof eventListener === 'function') {
-      oidcUserManager.events[addFnName](eventListener)
-    }
+    addUserManagerEventListener(oidcUserManager, eventName, oidcEventListeners[eventName])
+  })
+
+  // Dispatch oidc-client events on window (if in browser)
+  const userManagerEvents = [
+    'userLoaded',
+    'userUnloaded',
+    'accessTokenExpiring',
+    'accessTokenExpired',
+    'silentRenewError',
+    'userSignedOut'
+  ]
+  userManagerEvents.forEach(eventName => {
+    addUserManagerEventListener(oidcUserManager, eventName, () => { dispatchCustomBrowserEvent(eventName) })
   })
 
   const state = {
@@ -137,7 +147,6 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
         }
         context.commit('setOidcEventsAreBound')
       }
-      dispatchAuthenticationBrowserEvent()
     },
     getOidcUser (context) {
       oidcUserManager.getUser().then(function(user) {
@@ -146,16 +155,10 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
       })
     },
     addOidcEventListener (context, payload) {
-      const addFn = oidcUserManager.events['add' + firstLetterUppercase(payload.eventName)]
-      if (typeof addFn === 'function' && typeof payload.eventListener === 'function') {
-        addFn(payload.eventListener)
-      }
+      addUserManagerEventListener(oidcUserManager, payload.eventName, payload.eventListener)
     },
     removeOidcEventListener (context, payload) {
-      const removeFn = oidcUserManager.events['remove' + firstLetterUppercase(payload.eventName)]
-      if (typeof removeFn === 'function' && typeof payload.eventListener === 'function') {
-        removeFn(payload.eventListener)
-      }
+      removeUserManagerEventListener(oidcUserManager, payload.eventName, payload.eventListener)
     },
     signOutOidc (context) {
       oidcUserManager.signoutRedirect().then(function(resp) {
