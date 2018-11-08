@@ -77,6 +77,7 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
       return new Promise(resolve => {
         if (route.meta.isOidcCallback) {
           resolve(true)
+          return
         }
         let hasAccess = true
         let getUserPromise = new Promise(resolveUser => { resolveUser(null) })
