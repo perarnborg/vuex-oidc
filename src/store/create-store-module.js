@@ -28,9 +28,6 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
   }
 
   const isAuthenticated = (state) => {
-    if (state.access_token && !tokenIsExpired(state.access_token)) {
-      return true
-    }
     if (state.id_token && !tokenIsExpired(state.id_token)) {
       return true
     }
@@ -66,19 +63,38 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
 
   const actions = {
     oidcCheckAccess (context, route) {
-      return new Promise((resolve) => {
-        let hasAccess = true
-        if (!isAuthenticated(context.state) && !route.meta.isOidcCallback) {
-          if (route.meta.isPublic) {
-            if (oidcConfig.silent_redirect_uri) {
-              context.dispatch('authenticateOidcSilent')
-            }
-          } else {
-            context.dispatch('authenticateOidc', route.path)
-            hasAccess = false
-          }
+      return new Promise(resolve => {
+        if (route.meta.isOidcCallback) {
+          resolve(true)
         }
-        resolve(hasAccess)
+        let hasAccess = true
+        let getUserPromise = new Promise(resolveUser => { resolveUser(null) })
+        let isAuthenticatedInStore = isAuthenticated(context.state)
+        if (isAuthenticatedInStore) {
+          getUserPromise = new Promise(resolveUser => {
+            oidcUserManager.getUser().then(function(user) {
+              resolveUser(user)
+            }).catch(() => {
+              resolveUser(null)
+            })
+          })
+        }
+        getUserPromise.then(user => {
+          if (!user) {
+            if (isAuthenticatedInStore) {
+              context.commit('unsetOidcAuth')
+            }
+            if (route.meta.isPublic) {
+              if (oidcConfig.silent_redirect_uri) {
+                context.dispatch('authenticateOidcSilent')
+              }
+            } else {
+              context.dispatch('authenticateOidc', route.path)
+              hasAccess = false
+            }
+          }
+          resolve(hasAccess)
+        })
       })
     },
     authenticateOidc (context, redirectPath) {
@@ -86,7 +102,6 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
       sessionStorage.setItem('vuex_oidc_active_route', redirectPath)
       oidcUserManager.signinRedirect().catch(function(err) {
         context.commit('setOidcError', err)
-        console.log(err)
       })
     },
     oidcSignInCallback(context) {
@@ -127,7 +142,6 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
       oidcUserManager.getUser().then(function(user) {
         context.commit('setOidcUser', user)
       }).catch(function(err) {
-        console.log(err)
       })
     },
     addOidcEventListener (context, payload) {
@@ -146,7 +160,6 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
       oidcUserManager.signoutRedirect().then(function(resp) {
         context.commit('unsetOidcAuth')
       }).catch(function(err) {
-        console.log(err)
       })
     }
   }
