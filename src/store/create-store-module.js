@@ -2,12 +2,12 @@ import { objectAssign } from '../services/utils'
 import { getOidcConfig, createOidcUserManager, addUserManagerEventListener, removeUserManagerEventListener, tokenIsExpired, tokenExp } from '../services/oidc-helpers'
 import { dispatchCustomBrowserEvent } from '../services/browser-event'
 
-export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
+export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
   const oidcConfig = getOidcConfig(oidcSettings)
   const oidcUserManager = createOidcUserManager(oidcSettings)
-  moduleOptions = objectAssign([
+  storeSettings = objectAssign([
     { namespaced: false },
-    moduleOptions
+    storeSettings
   ])
 
   // Add event listeners passed into factory function
@@ -15,18 +15,20 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
     addUserManagerEventListener(oidcUserManager, eventName, oidcEventListeners[eventName])
   })
 
-  // Dispatch oidc-client events on window (if in browser)
-  const userManagerEvents = [
-    'userLoaded',
-    'userUnloaded',
-    'accessTokenExpiring',
-    'accessTokenExpired',
-    'silentRenewError',
-    'userSignedOut'
-  ]
-  userManagerEvents.forEach(eventName => {
-    addUserManagerEventListener(oidcUserManager, eventName, () => { dispatchCustomBrowserEvent(eventName) })
-  })
+  if (storeSettings.dispatchEventsOnWindow) {
+    // Dispatch oidc-client events on window (if in browser)
+    const userManagerEvents = [
+      'userLoaded',
+      'userUnloaded',
+      'accessTokenExpiring',
+      'accessTokenExpired',
+      'silentRenewError',
+      'userSignedOut'
+    ]
+    userManagerEvents.forEach(eventName => {
+      addUserManagerEventListener(oidcUserManager, eventName, () => { dispatchCustomBrowserEvent(eventName) })
+    })
+  }
 
   const state = {
     access_token: null,
@@ -190,8 +192,8 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
     }
   }
 
-  return objectAssign([
-    moduleOptions,
+  const module = objectAssign([
+    storeSettings,
     {
       state,
       getters,
@@ -199,4 +201,10 @@ export default (oidcSettings, moduleOptions = {}, oidcEventListeners = {}) => {
       mutations
     }
   ])
+
+  if (typeof module.dispatchEventsOnWindow !== 'undefined') {
+    delete module.dispatchEventsOnWindow
+  }
+
+  return module
 }
