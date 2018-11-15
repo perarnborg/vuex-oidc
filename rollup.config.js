@@ -2,8 +2,34 @@
 // import commonjs from 'rollup-plugin-commonjs';
 import pkg from './package.json';
 import babel from 'rollup-plugin-babel';
-import { eslint } from 'rollup-plugin-eslint';
-// import VuePlugin from 'rollup-plugin-vue'
+const fs = require('fs');
+let linter = false;
+try {
+	fs.statSync('./node_modules/rollup-plugin-eslint/package.json');
+  linter = require('rollup-plugin-eslint');
+  console.log('Building with linting');
+}
+catch(err) {
+  console.log('Building without linting');
+}
+
+const rollupPlugins = []
+
+if (linter) {
+	rollupPlugins.push(
+		linter.eslint({
+			throwOnError: true,
+			throwOnWarning: true,
+			include: ['src/**'],
+		  exclude: ['node_modules/**', 'dist/**']
+		})
+	);
+}
+rollupPlugins.push(
+  babel({
+	  exclude: ['node_modules/**']
+	})
+);
 
 export default [
 	// browser-friendly UMD build
@@ -33,17 +59,7 @@ export default [
 			{ file: pkg.main, format: 'cjs' },
 			{ file: pkg.module, format: 'es' }
 		],
-		plugins: [
-			eslint({
-				throwOnError: true,
-				throwOnWarning: true,
-				include: ['src/**'],
-			  exclude: ['node_modules/**', 'dist/**']
-			}),
-		  babel({
-			  exclude: ['node_modules/**']
-			})
-		],
+		plugins: rollupPlugins,
   	external: [ 'oidc-client' ]
 	}
 ];
