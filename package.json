@@ -11,7 +11,7 @@
     "vue oidc",
     "vue open id"
   ],
-  "version": "1.11.2",
+  "version": "1.11.3",
   "homepage": "https://github.com/perarnborg/vuex-oidc#readme",
   "license": "MIT",
   "repository": {
