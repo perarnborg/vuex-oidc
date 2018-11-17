@@ -1,100 +1,167 @@
-import { getOidcConfig, createOidcUserManager } from '../services/oidc-helpers'
-import { dispatchAuthenticationBrowserEvent } from '../services/browser-event'
+import { objectAssign } from '../services/utils'
+import { getOidcConfig, createOidcUserManager, addUserManagerEventListener, removeUserManagerEventListener, tokenIsExpired, tokenExp } from '../services/oidc-helpers'
+import { dispatchCustomBrowserEvent } from '../services/browser-event'
 
-export default (oidcSettings) => {
-
+export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
   const oidcConfig = getOidcConfig(oidcSettings)
   const oidcUserManager = createOidcUserManager(oidcSettings)
+  storeSettings = objectAssign([
+    { namespaced: false },
+    storeSettings
+  ])
+
+  // Add event listeners passed into factory function
+  Object.keys(oidcEventListeners).forEach(eventName => {
+    addUserManagerEventListener(oidcUserManager, eventName, oidcEventListeners[eventName])
+  })
+
+  if (storeSettings.dispatchEventsOnWindow) {
+    // Dispatch oidc-client events on window (if in browser)
+    const userManagerEvents = [
+      'userLoaded',
+      'userUnloaded',
+      'accessTokenExpiring',
+      'accessTokenExpired',
+      'silentRenewError',
+      'userSignedOut'
+    ]
+    userManagerEvents.forEach(eventName => {
+      addUserManagerEventListener(oidcUserManager, eventName, () => { dispatchCustomBrowserEvent(eventName) })
+    })
+  }
 
   const state = {
     access_token: null,
     id_token: null,
     user: null,
+    is_checked: false,
+    events_are_bound: false,
     error: null
+  }
+
+  const isAuthenticated = (state) => {
+    if (state.id_token && !tokenIsExpired(state.id_token)) {
+      return true
+    }
+    return false
   }
 
   const getters = {
     oidcIsAuthenticated: (state) => {
-      if (state.access_token || state.id_token) {
-        return true
-      }
-      return false
+      return isAuthenticated(state)
     },
     oidcUser: (state) => {
       return state.user
     },
     oidcAccessToken: (state) => {
-      return state.access_token
+      return tokenIsExpired(state.access_token) ? null : state.access_token
+    },
+    oidcAccessTokenExp: (state) => {
+      return tokenExp(state.access_token)
     },
     oidcIdToken: (state) => {
-      return state.id_token
+      return tokenIsExpired(state.id_token) ? null : state.id_token
+    },
+    oidcIdTokenExp: (state) => {
+      return tokenExp(state.id_token)
+    },
+    oidcAuthenticationIsChecked: (state) => {
+      return state.is_checked
+    },
+    oidcError: (state) => {
+      return state.error
     }
   }
 
   const actions = {
     oidcCheckAccess (context, route) {
-      return new Promise((resolve) => {
-        let hasAccess = true
-        if (!context.getters.oidcIsAuthenticated && !route.meta.isOidcCallback) {
-          if (route.meta.isPublic) {
-            if (oidcConfig.silent_redirect_uri) {
-              context.dispatch('authenticateOidcSilent')
-            }
-          } else {
-            context.dispatch('authenticateOidc')
-            hasAccess = false
-          }
+      return new Promise(resolve => {
+        if (route.meta.isOidcCallback) {
+          resolve(true)
+          return
         }
-        resolve(hasAccess)
+        let hasAccess = true
+        let getUserPromise = new Promise(resolve => { resolve(null) })
+        let isAuthenticatedInStore = isAuthenticated(context.state)
+        if (isAuthenticatedInStore) {
+          getUserPromise = new Promise(resolve => {
+            oidcUserManager.getUser().then(user => {
+              resolve(user)
+            }).catch(() => {
+              resolve(null)
+            })
+          })
+        }
+        getUserPromise.then(user => {
+          if (!user) {
+            if (isAuthenticatedInStore) {
+              context.commit('unsetOidcAuth')
+            }
+            if (route.meta.isPublic) {
+              if (oidcConfig.silent_redirect_uri) {
+                context.dispatch('authenticateOidcSilent')
+              }
+            } else {
+              context.dispatch('authenticateOidc', route.path)
+              hasAccess = false
+            }
+          }
+          resolve(hasAccess)
+        })
       })
     },
-    authenticateOidc (context) {
-      const redirectPath = document.location.pathname + (document.location.search || '') + (document.location.hash || '')
+    authenticateOidc (context, redirectPath) {
+      redirectPath += (document.location.search || '') + (document.location.hash || '')
       sessionStorage.setItem('vuex_oidc_active_route', redirectPath)
-      oidcUserManager.signinRedirect().catch(function(err) {
+      oidcUserManager.signinRedirect().catch(err => {
         context.commit('setOidcError', err)
-        console.log(err)
       })
     },
-    oidcSignInCallback(context) {
+    oidcSignInCallback (context) {
       return new Promise((resolve, reject) => {
         oidcUserManager.signinRedirectCallback()
-          .then(function (user) {
+          .then(user => {
             context.dispatch('oidcWasAuthenticated', user)
+            context.commit('setOidcAuthIsChecked')
             resolve(sessionStorage.getItem('vuex_oidc_active_route') || '/')
           })
-          .catch(function (err) {
+          .catch(err => {
             context.commit('setOidcError', err)
+            context.commit('setOidcAuthIsChecked')
             reject(err)
           })
       })
     },
-    oidcWasAuthenticated(context, user) {
-      context.commit('setOidcAuth', user)
-      dispatchAuthenticationBrowserEvent()
-    },
-    authenticateOidcSilent(context) {
-      oidcUserManager.signinSilent().then(function (user) {
-        context.dispatch('oidcWasAuthenticatedSilent', user)
-      }).catch(function () {
+    authenticateOidcSilent (context) {
+      oidcUserManager.signinSilent().then(user => {
+        context.dispatch('oidcWasAuthenticated', user)
+        context.commit('setOidcAuthIsChecked')
       })
     },
-    oidcWasAuthenticatedSilent(context, user) {
+    oidcWasAuthenticated (context, user) {
       context.commit('setOidcAuth', user)
-      dispatchAuthenticationBrowserEvent()
+      if (!context.state.events_are_bound) {
+        oidcUserManager.events.addAccessTokenExpired(() => { context.commit('unsetOidcAuth') })
+        if (oidcSettings.automaticSilentRenew) {
+          oidcUserManager.events.addAccessTokenExpiring(() => { context.dispatch('authenticateOidcSilent') })
+        }
+        context.commit('setOidcEventsAreBound')
+      }
     },
     getOidcUser (context) {
-      oidcUserManager.getUser().then(function(user) {
+      oidcUserManager.getUser().then(user => {
         context.commit('setOidcUser', user)
-      }).catch(function(err) {
-        console.log(err)
       })
     },
+    addOidcEventListener (context, payload) {
+      addUserManagerEventListener(oidcUserManager, payload.eventName, payload.eventListener)
+    },
+    removeOidcEventListener (context, payload) {
+      removeUserManagerEventListener(oidcUserManager, payload.eventName, payload.eventListener)
+    },
     signOutOidc (context) {
-      oidcUserManager.signoutRedirect().then(function(resp) {
+      oidcUserManager.signoutRedirect().then(() => {
         context.commit('unsetOidcAuth')
-      }).catch(function(err) {
-        console.log(err)
       })
     }
   }
@@ -114,15 +181,30 @@ export default (oidcSettings) => {
       state.access_token = null
       state.user = null
     },
+    setOidcAuthIsChecked (state) {
+      state.is_checked = true
+    },
+    setOidcEventsAreBound (state) {
+      state.events_are_bound = true
+    },
     setOidcError (state, error) {
-      state.error = error
+      state.error = error && error.message ? error.message : error
     }
   }
 
-  return {
-    state,
-    getters,
-    actions,
-    mutations
+  const module = objectAssign([
+    storeSettings,
+    {
+      state,
+      getters,
+      actions,
+      mutations
+    }
+  ])
+
+  if (typeof module.dispatchEventsOnWindow !== 'undefined') {
+    delete module.dispatchEventsOnWindow
   }
+
+  return module
 }

@@ -1,9 +1,9 @@
+import { objectAssign, parseJwt, firstLetterUppercase } from './utils'
 import { UserManager, WebStorageStateStore } from 'oidc-client'
 
 const defaultOidcConfig = {
   userStore: new WebStorageStateStore(),
-  loadUserInfo: true,
-  automaticSilentRenew: false
+  loadUserInfo: true
 }
 
 const requiredConfigProperties = [
@@ -15,11 +15,11 @@ const requiredConfigProperties = [
 ]
 
 export const getOidcConfig = (oidcSettings) => {
-  return Object.assign(
-    {},
+  return objectAssign([
     defaultOidcConfig,
-    oidcSettings
-  )
+    oidcSettings,
+    { automaticSilentRenew: false } // automaticSilentRenew is handled in vuex and not by user manager
+  ])
 }
 
 export const createOidcUserManager = (oidcSettings) => {
@@ -32,13 +32,36 @@ export const createOidcUserManager = (oidcSettings) => {
   return new UserManager(oidcConfig)
 }
 
-export const processSilentSignInCallback = (oidcConfig) => {
-  createOidcUserManager(Object.assign(
-    {},
-    oidcConfig,
-    {
-      silent_redirect_uri: null,
-      automaticSilentRenew: false
-    }
-  )).signinSilentCallback()
+export const addUserManagerEventListener = (oidcUserManager, eventName, eventListener) => {
+  const addFnName = 'add' + firstLetterUppercase(eventName)
+  if (typeof oidcUserManager.events[addFnName] === 'function' && typeof eventListener === 'function') {
+    oidcUserManager.events[addFnName](eventListener)
+  }
+}
+
+export const removeUserManagerEventListener = (oidcUserManager, eventName, eventListener) => {
+  const removeFnName = 'remove' + firstLetterUppercase(eventName)
+  if (typeof oidcUserManager.events[removeFnName] === 'function' && typeof eventListener === 'function') {
+    oidcUserManager.events[removeFnName](eventListener)
+  }
+}
+
+export const processSilentSignInCallback = () => {
+  new UserManager().signinSilentCallback()
+}
+
+export const tokenExp = (token) => {
+  if (token) {
+    const parsed = parseJwt(token)
+    return parsed.exp ? parsed.exp * 1000 : null
+  }
+  return null
+}
+
+export const tokenIsExpired = (token) => {
+  const tokenExpiryTime = tokenExp(token)
+  if (tokenExpiryTime) {
+    return tokenExpiryTime < new Date().getTime()
+  }
+  return false
 }
