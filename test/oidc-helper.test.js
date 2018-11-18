@@ -1,8 +1,12 @@
-const assert = require('assert')
-const vuexOidc = require('../dist/vuex-oidc.cjs')
-const oidcConfig = require('./oidcTestConfig')
+const assert = require('assert');
+const oidcConfig = require('./oidcTestConfig');
+let vuexOidc;
 
 describe('oidcHelper.createOidcUserManager', function() {
+  before(function () {
+    vuexOidc = require('../dist/vuex-oidc.cjs');
+  });
+
   it('should create a UserManager', function() {
     const userManager = vuexOidc.vuexOidcCreateUserManager(oidcConfig)
     assert.equal(typeof userManager, 'object')
@@ -17,16 +21,16 @@ describe('oidcHelper.createOidcUserManager', function() {
     it('should fail without oidc required setting ' + requiredSetting, function() {
       const faultyOidcConfig = {
         ...oidcConfig
-      }
-      delete faultyOidcConfig[requiredSetting]
-      let userManager
+      };
+      delete faultyOidcConfig[requiredSetting];
+      let userManager;
 
       try {
-        userManager = vuexOidc.vuexOidcCreateUserManager(faultyOidcConfig)
+        userManager = vuexOidc.vuexOidcCreateUserManager(faultyOidcConfig);
       }
       catch(error) {
       }
-      assert.notEqual(typeof userManager, 'object')
+      assert.notEqual(typeof userManager, 'object');
     });
-  })
+  });
 });
