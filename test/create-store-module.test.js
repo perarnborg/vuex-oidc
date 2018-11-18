@@ -22,49 +22,44 @@ describe('createStoreModule', function() {
     it('should resolve true for public routes if authenticated, and also signout user if state is not in storage', function() {
       const context = authenticatedContext();
       sinon.spy(context, 'commit');
-      storeModule.actions.oidcCheckAccess(context, publicRoute())
+      return storeModule.actions.oidcCheckAccess(context, publicRoute())
         .then(function(hasAccess) {
           assert.equal(hasAccess, true);
           assert.equal(context.commit.calledWith('unsetOidcAuth'), true);
           context.commit.restore();
         })
-        .catch(function(error) { console.error(error); assert.equal(true, false); });
     });
     it('should resolve true for public routes if not authenticated, and also dispatch silent auth action', function() {
       const context = unAuthenticatedContext();
       sinon.spy(context, 'dispatch');
-      storeModule.actions.oidcCheckAccess(context, publicRoute())
+      return storeModule.actions.oidcCheckAccess(context, publicRoute())
         .then(function(hasAccess) {
           assert.equal(hasAccess, true);
           assert.equal(context.dispatch.calledWith('authenticateOidcSilent'), true);
           context.dispatch.restore();
         })
-        .catch(function(error) { console.error(error); assert.equal(true, false); });
     });
     it('should resolve true for oidcCallbackRoutes routes if authenticated', function() {
-      storeModule.actions.oidcCheckAccess(authenticatedContext(), oidcCallbackRoute())
+      return storeModule.actions.oidcCheckAccess(authenticatedContext(), oidcCallbackRoute())
         .then(function(hasAccess) {
           assert.equal(hasAccess, true);
         })
-        .catch(function(error) { console.error(error); assert.equal(true, false); });
     });
     it('should resolve true for oidcCallbackRoutes routes if not authenticated', function() {
-      storeModule.actions.oidcCheckAccess(unAuthenticatedContext(), oidcCallbackRoute())
+      return storeModule.actions.oidcCheckAccess(unAuthenticatedContext(), oidcCallbackRoute())
         .then(function(hasAccess) {
           assert.equal(hasAccess, true);
         })
-        .catch(function(error) { console.error(error); assert.equal(true, false); });
     });
     it('should resolve false for protected routes if not authenticated, and also dispatch auth redirect action', function() {
       const context = unAuthenticatedContext();
       sinon.spy(context, 'dispatch');
-      storeModule.actions.oidcCheckAccess(context, protectedRoute())
+      return storeModule.actions.oidcCheckAccess(context, protectedRoute())
         .then(function(hasAccess) {
           assert.equal(hasAccess, false);
           assert.equal(context.dispatch.calledWith('authenticateOidc'), true);
           context.dispatch.restore();
         })
-        .catch(function(error) { console.error(error); assert.equal(true, false); });
     });
   });
 });
