@@ -51,7 +51,8 @@
     "dev": "rollup -c -w",
     "install:linter": "npm i && npm i rollup-plugin-eslint && npm i eslint-plugin-node && npm i eslint-plugin-import && npm i eslint-plugin-promise && npm i eslint-plugin-standard && npm i eslint-config-standard",
     "test": "nyc mocha",
-    "pretest": "npm run build"
+    "pretest": "npm run build",
+    "preversion": "npm test"
   },
   "files": [
     "dist"
