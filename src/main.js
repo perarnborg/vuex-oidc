@@ -2,6 +2,7 @@ import { createOidcUserManager, processSilentSignInCallback } from './services/o
 import createStoreModule from './store/create-store-module'
 import createRouterMiddleware from './router/create-router-middleware'
 import * as utils from './services/utils'
+import { dispatchCustomBrowserEvent } from './services/browser-event'
 
 export const vuexOidcCreateUserManager = createOidcUserManager
 
@@ -12,3 +13,5 @@ export const vuexOidcCreateRouterMiddleware = createRouterMiddleware
 export const vuexOidcProcessSilentSignInCallback = processSilentSignInCallback
 
 export const vuexOidcUtils = utils
+
+export const vuexDispatchCustomBrowserEvent = dispatchCustomBrowserEvent

@@ -15,6 +15,17 @@ describe('utils.objectAssign', function() {
   });
 });
 
+describe('utils.parseJwt', function() {
+  it('parses a valid token', function() {
+    const parsed = vuexOidcUtils.parseJwt(require('./id-token-2028-01-01'));
+    assert.equal(parsed.email, 'janedoe@example.com');
+  });
+  it('parses a an object when parsing an invalid token', function() {
+    assert.equal(typeof vuexOidcUtils.parseJwt('asd'), 'object');
+    assert.equal(typeof vuexOidcUtils.parseJwt(null), 'object');
+  });
+});
+
 describe('utils.firstLetterUppercase', function() {
   it('return a string with first letter uppercased', function() {
     assert.equal(vuexOidcUtils.firstLetterUppercase('userLoaded'), 'UserLoaded')

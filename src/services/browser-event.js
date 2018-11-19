@@ -9,6 +9,7 @@ function createCustomEvent (eventName, detail, params) {
     return new window.CustomEvent(prefixedEventName, params)
   }
 
+  /* istanbul ignore next */
   params = params || { bubbles: false, cancelable: false }
   params = objectAssign([params, { detail: detail }])
   var evt = document.createEvent('CustomEvent')
