@@ -13,4 +13,3 @@ An example of an implementation can be found in https://github.com/perarnborg/vu
 ## License
 
 [MIT](LICENSE).
-
