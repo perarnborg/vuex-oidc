@@ -10,6 +10,10 @@ See the wiki for doumentation on how to implement vue-router: https://github.com
 
 An example of an implementation can be found in https://github.com/perarnborg/vuex-oidc-example
 
+## Build status
+
+[![Build Status](https://travis-ci.org/perarnborg/vuex-oidc.svg?branch=master)](https://travis-ci.org/perarnborg/vuex-oidc)
+
 ## License
 
 [MIT](LICENSE).
