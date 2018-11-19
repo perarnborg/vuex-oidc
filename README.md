@@ -12,6 +12,8 @@ An example of an implementation can be found in https://github.com/perarnborg/vu
 
 ## Build status
 
+Tests are run on https://travis-ci.org
+
 [![Build Status](https://travis-ci.org/perarnborg/vuex-oidc.svg?branch=master)](https://travis-ci.org/perarnborg/vuex-oidc)
 
 ## License
