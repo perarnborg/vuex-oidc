@@ -21,8 +21,8 @@ describe('utils.parseJwt', function() {
     assert.equal(parsed.email, 'janedoe@example.com');
   });
   it('parses a an object when parsing an invalid token', function() {
-    const parsed = vuexOidcUtils.parseJwt('asd');
-    assert.equal(typeof parsed, 'object');
+    assert.equal(typeof vuexOidcUtils.parseJwt('asd'), 'object');
+    assert.equal(typeof vuexOidcUtils.parseJwt(null), 'object');
   });
 });
 

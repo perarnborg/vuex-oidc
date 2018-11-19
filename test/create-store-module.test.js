@@ -7,7 +7,7 @@ let storeModule;
 describe('createStoreModule', function() {
   before(function () {
     vuexOidc = require('../dist/vuex-oidc.cjs');
-    storeModule = vuexOidc.vuexOidcCreateStoreModule(oidcConfig);
+    storeModule = vuexOidc.vuexOidcCreateStoreModule(oidcConfig, {dispatchEventsOnWindow: true});
   });
 
   it('factory function should return a vuex module object', function() {
@@ -62,6 +62,34 @@ describe('createStoreModule', function() {
         })
     });
   });
+
+  describe('.actions.oidcWasAuthenticated', function() {
+    it('should set user in store and bind events', function() {
+      const context = unAuthenticatedContext();
+      sinon.spy(context, 'commit');
+      storeModule.actions.oidcWasAuthenticated(context, oidcUser());
+      assert.equal(context.commit.getCall(0).args[0], 'setOidcAuth');
+      assert.equal(context.commit.getCall(0).args[1].id_token, oidcUser().id_token);
+      assert.equal(context.commit.getCall(1).args[0], 'setOidcEventsAreBound');
+      context.commit.restore();
+    });
+  });
+
+  describe('.actions.oidcSignInCallback', function() {
+    it('callback sets error if state is not found in store', function() {
+      const context = unAuthenticatedContext();
+      sinon.spy(context, 'commit');
+      return storeModule.actions.oidcSignInCallback(context, oidcUser())
+        .then(function(redirectUrl) {
+          assert.equal(redirectUrl, false);
+          context.commit.restore();
+        })
+        .catch(function(error) {
+          assert.equal(typeof error, 'object');
+          context.commit.restore();
+        })
+    });
+  });
 });
 
 function authenticatedContext() {
@@ -69,9 +97,7 @@ function authenticatedContext() {
     commit: function(mutation, payload) {},
     dispatch: function(action, payload) {}
   });
-  context.state = Object.assign({}, context.state, {
-    id_token: require('./id-token-2028-01-01')
-  });
+  context.state = Object.assign({}, context.state, oidcUser());
   return context;
 }
 
@@ -102,5 +128,11 @@ function protectedRoute() {
   return {
     meta: {
     }
+  }
+}
+
+function oidcUser() {
+  return {
+    id_token: require('./id-token-2028-01-01')
   }
 }

@@ -46,6 +46,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     return false
   }
 
+  /* istanbul ignore next */
   const getters = {
     oidcIsAuthenticated: (state) => {
       return isAuthenticated(state)
@@ -149,23 +150,28 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       }
     },
     getOidcUser (context) {
+      /* istanbul ignore next */
       oidcUserManager.getUser().then(user => {
         context.commit('setOidcUser', user)
       })
     },
     addOidcEventListener (context, payload) {
+      /* istanbul ignore next */
       addUserManagerEventListener(oidcUserManager, payload.eventName, payload.eventListener)
     },
     removeOidcEventListener (context, payload) {
+      /* istanbul ignore next */
       removeUserManagerEventListener(oidcUserManager, payload.eventName, payload.eventListener)
     },
     signOutOidc (context) {
+      /* istanbul ignore next */
       oidcUserManager.signoutRedirect().then(() => {
         context.commit('unsetOidcAuth')
       })
     }
   }
 
+  /* istanbul ignore next */
   const mutations = {
     setOidcAuth (state, user) {
       state.id_token = user.id_token

@@ -36,6 +36,7 @@
     "jsdom": "^11.11.0",
     "mocha": "^5.1.1",
     "node-storage-shim": "^1.0.1",
+    "nyc": "^13.1.0",
     "rollup": "^0.58.0",
     "rollup-plugin-babel": "^3.0.7",
     "rollup-plugin-commonjs": "^9.1.0",
@@ -49,7 +50,7 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "install:linter": "npm i && npm i rollup-plugin-eslint && npm i eslint-plugin-node && npm i eslint-plugin-import && npm i eslint-plugin-promise && npm i eslint-plugin-standard && npm i eslint-config-standard",
-    "test": "mocha",
+    "test": "nyc mocha",
     "pretest": "npm run build"
   },
   "files": [
