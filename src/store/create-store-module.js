@@ -40,7 +40,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
   }
 
   const isAuthenticated = (state) => {
-    if (state.id_token && !tokenIsExpired(state.id_token)) {
+    if (state.id_token) {
       return true
     }
     return false
@@ -94,7 +94,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
           })
         }
         getUserPromise.then(user => {
-          if (!user) {
+          if (!user || user.expired) {
             if (isAuthenticatedInStore) {
               context.commit('unsetOidcAuth')
             }
