@@ -1,6 +1,6 @@
 const assert = require('assert');
 const sinon = require('sinon');
-const sinonSandbox = sinon.sandbox.create();
+const sinonSandbox = sinon.createSandbox();
 const oidcConfig = require('./oidcTestConfig');
 let vuexOidc;
 let storeModule;
