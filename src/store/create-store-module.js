@@ -138,6 +138,10 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
         context.dispatch('oidcWasAuthenticated', user)
         context.commit('setOidcAuthIsChecked')
       })
+      .catch(err => {
+        context.commit('setOidcError', err)
+        context.commit('setOidcAuthIsChecked')
+      })
     },
     oidcWasAuthenticated (context, user) {
       context.commit('setOidcAuth', user)
