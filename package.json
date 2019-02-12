@@ -41,10 +41,7 @@
     "rollup-plugin-babel": "^3.0.7",
     "rollup-plugin-commonjs": "^9.1.0",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-vue": "^4.7.1",
-    "sinon": "^7.2.3",
-    "vue": "^2.6.5",
-    "vue-template-compiler": "^2.6.5"
+    "sinon": "^7.2.3"
   },
   "scripts": {
     "build": "rollup -c",
