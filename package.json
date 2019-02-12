@@ -42,9 +42,7 @@
     "rollup-plugin-commonjs": "^9.1.0",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-vue": "^4.1.4",
-    "sinon": "^5.0.10",
-    "vue": "^2.5.16",
-    "vue-template-compiler": "^2.5.16"
+    "sinon": "^5.0.10"
   },
   "scripts": {
     "build": "rollup -c",
