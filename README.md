@@ -4,7 +4,7 @@ Vue.js implementation of oidc-client (https://github.com/IdentityModel/oidc-clie
 
 ## Documentation
 
-See the wiki for doumentation on how to implement vue-router: https://github.com/perarnborg/vuex-oidc/wiki
+See the wiki for doumentation on how to implement vuex-oidc: https://github.com/perarnborg/vuex-oidc/wiki
 
 ## Example
 
