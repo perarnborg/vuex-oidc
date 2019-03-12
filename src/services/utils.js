@@ -20,3 +20,7 @@ export const parseJwt = (token) => {
 export const firstLetterUppercase = (string) => {
   return string && string.length > 0 ? string.charAt(0).toUpperCase() + string.slice(1) : ''
 }
+
+export const camelCaseToSnakeCase = (string) => {
+  return string.split(/(?=[A-Z])/).join('_').toLowerCase();
+}

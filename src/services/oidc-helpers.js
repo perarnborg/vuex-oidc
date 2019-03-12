@@ -1,4 +1,4 @@
-import { objectAssign, parseJwt, firstLetterUppercase } from './utils'
+import { objectAssign, parseJwt, firstLetterUppercase, camelCaseToSnakeCase } from './utils'
 import { UserManager, WebStorageStateStore } from 'oidc-client'
 
 const defaultOidcConfig = {
@@ -14,10 +14,32 @@ const requiredConfigProperties = [
   'scope'
 ]
 
+const settingsThatAreSnakeCasedInOidcClient = [
+  'clientId',
+  'redirectUri',
+  'responseType',
+  'maxAge',
+  'uiLocales',
+  'loginHint',
+  'acrValues',
+  'postLogoutRedirectUri',
+  'popupRedirectUri',
+  'silentRedirectUri'
+]
+
+const snakeCasedSettings = (oidcSettings) => {
+  settingsThatAreSnakeCasedInOidcClient.forEach(setting => {
+    if (typeof oidcSettings[setting] !== 'undefined') {
+      oidcSettings[camelCaseToSnakeCase(setting)] = oidcSettings[setting]
+    }
+  })
+  return oidcSettings
+}
+
 export const getOidcConfig = (oidcSettings) => {
   return objectAssign([
     defaultOidcConfig,
-    oidcSettings,
+    snakeCasedSettings(oidcSettings),
     { automaticSilentRenew: false } // automaticSilentRenew is handled in vuex and not by user manager
   ])
 }
