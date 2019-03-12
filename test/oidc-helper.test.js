@@ -33,4 +33,19 @@ describe('oidcHelper.createOidcUserManager', function() {
       assert.notEqual(typeof userManager, 'object');
     });
   });
+  it('should translate settings that are snake_case in oidc-client from camelCase ', function() {
+    const camelCaseOidcConfig = {
+      ...oidcConfig,
+      redirectUri: oidcConfig.redirect_uri
+    };
+    delete camelCaseOidcConfig.redirect_uri;
+    let userManager;
+
+    try {
+      userManager = vuexOidc.vuexOidcCreateUserManager(camelCaseOidcConfig);
+    }
+    catch(error) {
+    }
+    assert.equal(typeof userManager, 'object')
+  });
 });
