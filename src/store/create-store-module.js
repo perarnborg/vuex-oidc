@@ -84,7 +84,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
         let hasAccess = true
         let getUserPromise = new Promise(resolve => { resolve(null) })
         let isAuthenticatedInStore = isAuthenticated(context.state)
-        if (isAuthenticatedInStore) {
+        if (!isAuthenticatedInStore) {
           getUserPromise = new Promise(resolve => {
             oidcUserManager.getUser().then(user => {
               resolve(user)
