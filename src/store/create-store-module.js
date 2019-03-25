@@ -82,17 +82,14 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
           return
         }
         let hasAccess = true
-        let getUserPromise = new Promise(resolve => { resolve(null) })
-        let isAuthenticatedInStore = isAuthenticated(context.state)
-        if (isAuthenticatedInStore) {
-          getUserPromise = new Promise(resolve => {
-            oidcUserManager.getUser().then(user => {
-              resolve(user)
-            }).catch(() => {
-              resolve(null)
-            })
+        let getUserPromise = new Promise(resolve => {
+          oidcUserManager.getUser().then(user => {
+            resolve(user)
+          }).catch(() => {
+            resolve(null)
           })
-        }
+        })
+        let isAuthenticatedInStore = isAuthenticated(context.state)
         getUserPromise.then(user => {
           if (!user || user.expired) {
             if (isAuthenticatedInStore) {
@@ -106,6 +103,8 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
               context.dispatch('authenticateOidc', route.path)
               hasAccess = false
             }
+          } else {
+            context.commit('setOidcAuth', user)
           }
           resolve(hasAccess)
         })
