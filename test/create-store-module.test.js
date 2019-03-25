@@ -78,13 +78,23 @@ describe('createStoreModule', function() {
             assert.equal(hasAccess, true);
           })
       });
-      it('should resolve false for protected routes if authenticated in vuex, but not in storage. Also signout user from vuex.', function() {
+      it('should resolve true for protected routes if not authenticated in vuex, but in storage.', function() {
+        const context = unAuthenticatedContext();
+        sinonSandbox.stub(UserManager.prototype, 'getUser').callsFake(getUserPromise);
+        return storeModule.actions.oidcCheckAccess(context, protectedRoute())
+          .then(function(hasAccess) {
+            assert.equal(hasAccess, true);
+          })
+      });
+      it('should resolve false for protected routes if authenticated in vuex, but not in storage. Also signout user from vuex and dispatch auth redirect action.', function() {
         const context = authenticatedContext();
+        sinon.spy(context, 'dispatch');
         sinon.spy(context, 'commit');
         return storeModule.actions.oidcCheckAccess(context, protectedRoute())
           .then(function(hasAccess) {
             assert.equal(hasAccess, false);
             assert.equal(context.commit.calledWith('unsetOidcAuth'), true);
+            assert.equal(context.dispatch.calledWith('authenticateOidc'), true);
             context.commit.restore();
           })
       });
