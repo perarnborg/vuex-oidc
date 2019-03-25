@@ -84,7 +84,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
         let hasAccess = true
         let getUserPromise = new Promise(resolve => { resolve(null) })
         let isAuthenticatedInStore = isAuthenticated(context.state)
-        if (!isAuthenticatedInStore) {
+        if (isAuthenticatedInStore) {
           getUserPromise = new Promise(resolve => {
             oidcUserManager.getUser().then(user => {
               resolve(user)
@@ -158,6 +158,15 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       oidcUserManager.getUser().then(user => {
         context.commit('setOidcUser', user)
       })
+    },
+    loadOidcUser: function loadOidcUser(context) {
+        /* istanbul ignore next */
+        oidcUserManager.getUser().then(function (user) {
+          if(user) {
+              context.dispatch('oidcWasAuthenticated', user);
+              context.commit('setOidcAuthIsChecked');
+          }
+        });
     },
     addOidcEventListener (context, payload) {
       /* istanbul ignore next */
