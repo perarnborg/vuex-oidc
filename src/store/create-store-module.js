@@ -104,7 +104,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
               hasAccess = false
             }
           } else {
-            context.commit('setOidcAuth', user)
+            context.dispatch('oidcWasAuthenticated', user);
           }
           resolve(hasAccess)
         })
@@ -122,7 +122,6 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
         oidcUserManager.signinRedirectCallback()
           .then(user => {
             context.dispatch('oidcWasAuthenticated', user)
-            context.commit('setOidcAuthIsChecked')
             resolve(sessionStorage.getItem('vuex_oidc_active_route') || '/')
           })
           .catch(err => {
