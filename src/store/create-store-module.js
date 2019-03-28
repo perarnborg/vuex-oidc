@@ -26,7 +26,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       'userSignedOut'
     ]
     userManagerEvents.forEach(eventName => {
-      addUserManagerEventListener(oidcUserManager, eventName, () => { dispatchCustomBrowserEvent(eventName) })
+      addUserManagerEventListener(oidcUserManager, eventName, (e) => { dispatchCustomBrowserEvent(eventName, e.detail || {}) })
     })
   }
 
@@ -105,6 +105,14 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
             }
           } else {
             context.dispatch('oidcWasAuthenticated', user);
+            if (!isAuthenticatedInStore) {
+              if (oidcEventListeners && typeof oidcEventListeners.userLoaded === 'function') {
+                oidcEventListeners.userLoaded(user);
+              }
+              if (storeSettings.dispatchEventsOnWindow) {
+                dispatchCustomBrowserEvent('userLoaded', user)
+              }
+            }
           }
           resolve(hasAccess)
         })
