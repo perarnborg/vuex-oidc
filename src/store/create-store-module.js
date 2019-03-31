@@ -26,7 +26,10 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       'userSignedOut'
     ]
     userManagerEvents.forEach(eventName => {
-      addUserManagerEventListener(oidcUserManager, eventName, (e) => { dispatchCustomBrowserEvent(eventName, e.detail || {}) })
+      addUserManagerEventListener(oidcUserManager, eventName, (e) => {
+        const detail = e && e.detail ? e.detail : {}
+        dispatchCustomBrowserEvent(eventName, detail)
+      })
     })
   }
 
@@ -142,7 +145,6 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     authenticateOidcSilent (context) {
       oidcUserManager.signinSilent().then(user => {
         context.dispatch('oidcWasAuthenticated', user)
-        context.commit('setOidcAuthIsChecked')
       })
       .catch(err => {
         context.commit('setOidcError', err)
@@ -158,6 +160,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
         }
         context.commit('setOidcEventsAreBound')
       }
+      context.commit('setOidcAuthIsChecked')
     },
     getOidcUser (context) {
       /* istanbul ignore next */
