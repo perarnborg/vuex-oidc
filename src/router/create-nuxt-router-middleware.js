@@ -1,16 +1,13 @@
-export default (store, vuexNamespace) => {
+export default (vuexNamespace) => {
   return (context) => {
     return new Promise((resolve, reject) => {
-      store.dispatch((vuexNamespace ? vuexNamespace + '/' : '') + 'oidcCheckAccess', context.route.path)
+      context.store.dispatch((vuexNamespace ? vuexNamespace + '/' : '') + 'oidcCheckAccess', context.route)
         .then((hasAccess) => {
           if (hasAccess) {
             resolve()
-          } else {
-            reject()
           }
         })
         .catch(() => {
-          reject()
         })
     })
   }
