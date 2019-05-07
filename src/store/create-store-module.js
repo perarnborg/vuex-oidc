@@ -49,6 +49,26 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     return false
   }
 
+  const routeIsOidcCallback = (route) => {
+    if (route.meta.isOidcCallback) {
+      return true
+    }
+    if (route.path && RegExp(route.path + '$').test(oidcConfig.redirectUri)) {
+      return true
+    }
+    return false
+  }
+
+  const routeIsPublic = (route) => {
+    if (route.meta.isPublic) {
+      return true
+    }
+    if (storeSettings.publicRoutePaths) {
+      return storeSettings.publicRoutePaths.indexOf(route.path) > -1
+    }
+    return false
+  }
+
   /* istanbul ignore next */
   const getters = {
     oidcIsAuthenticated: (state) => {
@@ -80,7 +100,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
   const actions = {
     oidcCheckAccess (context, route) {
       return new Promise(resolve => {
-        if (route.meta.isOidcCallback) {
+        if (routeIsOidcCallback(route)) {
           resolve(true)
           return
         }
@@ -98,7 +118,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
             if (isAuthenticatedInStore) {
               context.commit('unsetOidcAuth')
             }
-            if (route.meta.isPublic) {
+            if (routeIsPublic(route)) {
               if (oidcConfig.silent_redirect_uri) {
                 context.dispatch('authenticateOidcSilent')
               }
