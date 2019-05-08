@@ -1,5 +1,5 @@
 import { objectAssign } from '../services/utils'
-import { getOidcConfig, createOidcUserManager, addUserManagerEventListener, removeUserManagerEventListener, tokenIsExpired, tokenExp } from '../services/oidc-helpers'
+import { getOidcConfig, getOidcCallbackPath, createOidcUserManager, addUserManagerEventListener, removeUserManagerEventListener, tokenIsExpired, tokenExp } from '../services/oidc-helpers'
 import { dispatchCustomBrowserEvent } from '../services/browser-event'
 
 export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
@@ -9,6 +9,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     { namespaced: false },
     storeSettings
   ])
+  const oidcCallbackPath = getOidcCallbackPath(oidcConfig)
 
   // Add event listeners passed into factory function
   Object.keys(oidcEventListeners).forEach(eventName => {
@@ -53,7 +54,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     if (route.meta.isOidcCallback) {
       return true
     }
-    if (route.path && RegExp(route.path + '$').test(oidcConfig.redirectUri)) {
+    if (route.path && route.path === oidcCallbackPath) {
       return true
     }
     return false
