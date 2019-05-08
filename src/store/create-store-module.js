@@ -95,6 +95,11 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     },
     oidcError: (state) => {
       return state.error
+    },
+    oidcIsRoutePublic: (state) => {
+      return (route) => {
+        return routeIsPublic(route)
+      }
     }
   }
 
