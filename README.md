@@ -6,9 +6,11 @@ Vue.js implementation of oidc-client (https://github.com/IdentityModel/oidc-clie
 
 See the wiki for doumentation on how to implement vuex-oidc: https://github.com/perarnborg/vuex-oidc/wiki
 
-## Example
+## Examples
 
 An example of an implementation can be found in https://github.com/perarnborg/vuex-oidc-example
+
+An example using Nuxt can be found here: https://github.com/perarnborg/vuex-oidc-example-nuxt
 
 ## Build status
 
