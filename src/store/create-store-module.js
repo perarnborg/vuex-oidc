@@ -1,5 +1,5 @@
 import { objectAssign } from '../services/utils'
-import { getOidcConfig, createOidcUserManager, addUserManagerEventListener, removeUserManagerEventListener, tokenIsExpired, tokenExp } from '../services/oidc-helpers'
+import { getOidcConfig, getOidcCallbackPath, createOidcUserManager, addUserManagerEventListener, removeUserManagerEventListener, tokenIsExpired, tokenExp } from '../services/oidc-helpers'
 import { dispatchCustomBrowserEvent } from '../services/browser-event'
 
 export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
@@ -9,6 +9,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     { namespaced: false },
     storeSettings
   ])
+  const oidcCallbackPath = getOidcCallbackPath(oidcConfig)
 
   // Add event listeners passed into factory function
   Object.keys(oidcEventListeners).forEach(eventName => {
@@ -49,6 +50,26 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     return false
   }
 
+  const routeIsOidcCallback = (route) => {
+    if (route.meta.isOidcCallback) {
+      return true
+    }
+    if (route.path && route.path === oidcCallbackPath) {
+      return true
+    }
+    return false
+  }
+
+  const routeIsPublic = (route) => {
+    if (route.meta.isPublic) {
+      return true
+    }
+    if (storeSettings.publicRoutePaths) {
+      return storeSettings.publicRoutePaths.indexOf(route.path) > -1
+    }
+    return false
+  }
+
   /* istanbul ignore next */
   const getters = {
     oidcIsAuthenticated: (state) => {
@@ -74,13 +95,18 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     },
     oidcError: (state) => {
       return state.error
+    },
+    oidcIsRoutePublic: (state) => {
+      return (route) => {
+        return routeIsPublic(route)
+      }
     }
   }
 
   const actions = {
     oidcCheckAccess (context, route) {
       return new Promise(resolve => {
-        if (route.meta.isOidcCallback) {
+        if (routeIsOidcCallback(route)) {
           resolve(true)
           return
         }
@@ -98,7 +124,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
             if (isAuthenticatedInStore) {
               context.commit('unsetOidcAuth')
             }
-            if (route.meta.isPublic) {
+            if (routeIsPublic(route)) {
               if (oidcConfig.silent_redirect_uri) {
                 context.dispatch('authenticateOidcSilent')
               }

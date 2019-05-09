@@ -148,6 +148,7 @@ function unAuthenticatedContext() {
 
 function publicRoute() {
   return {
+    path: '/',
     meta: {
       isPublic: true
     }
@@ -164,6 +165,7 @@ function oidcCallbackRoute() {
 
 function protectedRoute() {
   return {
+    path: '/protected',
     meta: {
     }
   }
