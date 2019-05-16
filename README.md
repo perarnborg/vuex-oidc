@@ -1,16 +1,16 @@
 # vuex-oidc
 
-Vue.js implementation of oidc-client (https://github.com/IdentityModel/oidc-client-js) using vuex and vue-router.
+Vue.js implementation of [oidc-client](https://github.com/IdentityModel/oidc-client-js) using vuex and vue-router.
 
 ## Documentation
 
-See the wiki for doumentation on how to implement vuex-oidc: https://github.com/perarnborg/vuex-oidc/wiki
+See the [wiki](https://github.com/perarnborg/vuex-oidc/wiki) for doumentation on how to implement vuex-oidc.
 
 ## Examples
 
-An example of an implementation can be found in https://github.com/perarnborg/vuex-oidc-example
+An example of an implementation can be found [here](https://github.com/perarnborg/vuex-oidc-example).
 
-An example using Nuxt can be found here: https://github.com/perarnborg/vuex-oidc-example-nuxt
+An example using Nuxt can be found [here](https://github.com/perarnborg/vuex-oidc-example-nuxt).
 
 ## Build status
 
