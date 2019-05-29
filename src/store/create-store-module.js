@@ -38,6 +38,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     access_token: null,
     id_token: null,
     user: null,
+    scopes: null,
     is_checked: false,
     events_are_bound: false,
     error: null
@@ -83,6 +84,9 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     },
     oidcAccessTokenExp: (state) => {
       return tokenExp(state.access_token)
+    },
+    oidcScopes: (state) => {
+      return state.scopes
     },
     oidcIdToken: (state) => {
       return tokenIsExpired(state.id_token) ? null : state.id_token
@@ -216,6 +220,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       state.id_token = user.id_token
       state.access_token = user.access_token
       state.user = user.profile
+      state.scopes = user.scopes
       state.error = null
     },
     setOidcUser (state, user) {
