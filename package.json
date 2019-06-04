@@ -20,6 +20,7 @@
   },
   "main": "dist/vuex-oidc.cjs.js",
   "module": "dist/vuex-oidc.esm.js",
+  "typings": "index.d.ts",
   "peerDependencies": {
     "vue": ">= 2.5.0",
     "vuex": ">= 3.0.0",
@@ -52,6 +53,7 @@
     "preversion": "npm test"
   },
   "files": [
-    "dist"
+    "dist",
+    "index.d.ts"
   ]
 }
