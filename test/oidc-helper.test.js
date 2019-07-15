@@ -53,3 +53,31 @@ describe('oidcHelper.createOidcUserManager', function() {
     assert.equal(typeof userManager, 'object')
   });
 });
+
+describe('oidcHelper.getOidcCallbackPath', function() {
+  before(function () {
+    vuexOidc = require('../dist/vuex-oidc.cjs');
+  });
+
+  it('should return path when router base is /', function() {
+    const path = vuexOidc.vuexOidcGetOidcCallbackPath(oidcConfig, '/');
+    assert.equal(path, '/oidc-callback');
+  });
+
+  it('should return path when router base is not /', function() {
+    const routeBase = '/app/';
+    const path = vuexOidc.vuexOidcGetOidcCallbackPath({
+      ...oidcConfig,
+      redirect_uri: 'http://localhost:1337' + routeBase + 'oidc-callback'
+    }, routeBase)
+    assert.equal(path, '/oidc-callback')
+  });
+
+  it('should return path without trailing /', function() {
+    const path = vuexOidc.vuexOidcGetOidcCallbackPath({
+      ...oidcConfig,
+      redirect_uri: 'http://localhost:1337/oidc-callback/'
+    }, '/')
+    assert.equal(path, '/oidc-callback')
+  });
+});

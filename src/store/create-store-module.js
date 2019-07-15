@@ -9,7 +9,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     { namespaced: false },
     storeSettings
   ])
-  const oidcCallbackPath = getOidcCallbackPath(oidcConfig)
+  const oidcCallbackPath = getOidcCallbackPath(oidcConfig, storeSettings.routeBase || '/')
 
   // Add event listeners passed into factory function
   Object.keys(oidcEventListeners).forEach(eventName => {
@@ -55,7 +55,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     if (route.meta.isOidcCallback) {
       return true
     }
-    if (route.path && route.path === oidcCallbackPath) {
+    if (route.path && route.path.replace(/\/$/, '') === oidcCallbackPath) {
       return true
     }
     return false

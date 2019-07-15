@@ -1,4 +1,4 @@
-import { createOidcUserManager, processSilentSignInCallback } from './services/oidc-helpers'
+import { createOidcUserManager, processSilentSignInCallback, getOidcCallbackPath } from './services/oidc-helpers'
 import createStoreModule from './store/create-store-module'
 import createRouterMiddleware from './router/create-router-middleware'
 import createNuxtRouterMiddleware from './router/create-nuxt-router-middleware'
@@ -14,6 +14,8 @@ export const vuexOidcCreateNuxtRouterMiddleware = createNuxtRouterMiddleware
 export const vuexOidcCreateRouterMiddleware = createRouterMiddleware
 
 export const vuexOidcProcessSilentSignInCallback = processSilentSignInCallback
+
+export const vuexOidcGetOidcCallbackPath = getOidcCallbackPath
 
 export const vuexOidcUtils = utils
 

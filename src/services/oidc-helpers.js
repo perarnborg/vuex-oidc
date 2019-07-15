@@ -44,10 +44,10 @@ export const getOidcConfig = (oidcSettings) => {
   ])
 }
 
-export const getOidcCallbackPath = (oidcConfig) => {
+export const getOidcCallbackPath = (oidcConfig, routeBase = '/') => {
   const domainStartsAt = '://'
   const hostAndPath = oidcConfig.redirect_uri.substr(oidcConfig.redirect_uri.indexOf(domainStartsAt) + domainStartsAt.length)
-  return hostAndPath.substr(hostAndPath.indexOf('/'))
+  return hostAndPath.substr(hostAndPath.indexOf(routeBase) + routeBase.length - 1).replace(/\/$/, '')
 }
 
 export const createOidcUserManager = (oidcSettings) => {
