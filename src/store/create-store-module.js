@@ -66,7 +66,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       return true
     }
     if (storeSettings.publicRoutePaths) {
-      return storeSettings.publicRoutePaths.indexOf(route.path) > -1
+      return storeSettings.publicRoutePaths.map(path => path.replace(/\/$/, '')).indexOf(route.path.replace(/\/$/, '')) > -1
     }
     return false
   }
