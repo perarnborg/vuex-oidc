@@ -128,6 +128,29 @@ describe('createStoreModule', function() {
         })
     });
   });
+
+  describe('.getters.oidcIsRoutePublic', function() {
+    it('should not call isPublicRoute when not a function', function() {
+      const route = {
+        path: '/',
+        meta: {}
+      };
+      storeModule = vuexOidc.vuexOidcCreateStoreModule(oidcConfig, {isPublicRoute: 'not a function'});
+      assert.equal(storeModule.getters.oidcIsRoutePublic(storeModule.state)(route), false);
+    });
+
+    it('should call isPublicRoute', function() {
+      const route = {
+        path: '/',
+        meta: {}
+      };
+      const isPublicRoute = sinon.stub().returns(true);
+
+      storeModule = vuexOidc.vuexOidcCreateStoreModule(oidcConfig, {isPublicRoute});
+      assert.equal(storeModule.getters.oidcIsRoutePublic(storeModule.state)(route), true);
+      assert.equal(isPublicRoute.calledWith(route), true);
+    });
+  });
 });
 
 function authenticatedContext() {
