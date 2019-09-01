@@ -1,5 +1,11 @@
 # vuex-oidc changelog
 
+## 3.1.0
+*2019-09-01*
+
+### Features
+* Enable support for vue-router hash mode.
+
 ## 3.0.0
 *2019-08-15*
 
