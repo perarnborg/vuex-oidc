@@ -78,6 +78,19 @@ export const processSilentSignInCallback = () => {
   new UserManager().signinSilentCallback()
 }
 
+export const processSignInCallback = (oidcSettings) => {
+  return new Promise((resolve, reject) => {
+    const oidcUserManager = createOidcUserManager(oidcSettings)
+    oidcUserManager.signinRedirectCallback()
+      .then(user => {
+        resolve(sessionStorage.getItem('vuex_oidc_active_route') || '/')
+      })
+      .catch(err => {
+        reject(err)
+      })
+  })
+}
+
 export const tokenExp = (token) => {
   if (token) {
     const parsed = parseJwt(token)

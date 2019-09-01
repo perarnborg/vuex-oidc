@@ -7,6 +7,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
   const oidcUserManager = createOidcUserManager(oidcSettings)
   storeSettings = objectAssign([
     { namespaced: false },
+    { routerMode: 'history' },
     storeSettings
   ])
   const oidcCallbackPath = getOidcCallbackPath(oidcConfig, storeSettings.routeBase || '/')
@@ -155,7 +156,9 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       })
     },
     authenticateOidc (context, redirectPath) {
-      redirectPath += (document.location.search || '') + (document.location.hash || '')
+      if (storeSettings.routerMode !== 'hash') {
+        redirectPath += (document.location.search || '') + (document.location.hash || '')
+      }
       sessionStorage.setItem('vuex_oidc_active_route', redirectPath)
       oidcUserManager.signinRedirect().catch(err => {
         context.commit('setOidcError', err)
