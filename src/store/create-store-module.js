@@ -164,9 +164,9 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
         context.commit('setOidcError', err)
       })
     },
-    oidcSignInCallback (context) {
+    oidcSignInCallback (context, url) {
       return new Promise((resolve, reject) => {
-        oidcUserManager.signinRedirectCallback()
+        oidcUserManager.signinRedirectCallback(url)
           .then(user => {
             context.dispatch('oidcWasAuthenticated', user)
             resolve(sessionStorage.getItem('vuex_oidc_active_route') || '/')
