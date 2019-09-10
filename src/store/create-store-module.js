@@ -28,9 +28,8 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       'userSignedOut'
     ]
     userManagerEvents.forEach(eventName => {
-      addUserManagerEventListener(oidcUserManager, eventName, (e) => {
-        const detail = e && e.detail ? e.detail : {}
-        dispatchCustomBrowserEvent(eventName, detail)
+      addUserManagerEventListener(oidcUserManager, eventName, (detail) => {
+        dispatchCustomBrowserEvent(eventName, detail ? detail : {})
       })
     })
   }
