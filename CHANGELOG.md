@@ -1,5 +1,11 @@
 # vuex-oidc changelog
 
+## 3.1.4
+*2019-09-22*
+
+### Features
+* Add removeUser action to have a client side signout
+
 ## 3.1.3
 *2019-09-22*
 
