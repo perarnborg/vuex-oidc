@@ -212,6 +212,12 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       oidcUserManager.signoutRedirect().then(() => {
         context.commit('unsetOidcAuth')
       })
+    },
+    removeUser (context) {
+      /* istanbul ignore next */
+      oidcUserManager.removeUser().then(() => {
+        context.commit('unsetOidcAuth')
+      })
     }
   }
 
