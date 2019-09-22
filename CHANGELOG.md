@@ -1,5 +1,23 @@
 # vuex-oidc changelog
 
+## 3.1.3
+*2019-09-22*
+
+### Features
+* Remove special handling of router hash mode
+
+## 3.1.2
+*2019-09-10*
+
+### Features
+* Fix payload in window events
+
+## 3.1.1
+*2019-09-03*
+
+### Features
+* Add url paramater to oidcSignInCallback action
+
 ## 3.1.0
 *2019-09-01*
 
