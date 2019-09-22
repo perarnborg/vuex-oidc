@@ -160,7 +160,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       }
       sessionStorage.setItem('vuex_oidc_active_route', redirectPath)
       oidcUserManager.signinRedirect().catch(err => {
-        context.commit('setOidcError', err)
+        context.commit('setOidcError', errorPayload('authenticateOidc', err))
       })
     },
     oidcSignInCallback (context, url) {
@@ -171,7 +171,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
             resolve(sessionStorage.getItem('vuex_oidc_active_route') || '/')
           })
           .catch(err => {
-            context.commit('setOidcError', err)
+            context.commit('setOidcError', errorPayload('oidcSignInCallback', err))
             context.commit('setOidcAuthIsChecked')
             reject(err)
           })
@@ -182,7 +182,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
         context.dispatch('oidcWasAuthenticated', user)
       })
       .catch(err => {
-        context.commit('setOidcError', err)
+        context.commit('setOidcError', errorPayload('authenticateOidcSilent', err))
         context.commit('setOidcAuthIsChecked')
       })
     },
@@ -242,8 +242,26 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     setOidcEventsAreBound (state) {
       state.events_are_bound = true
     },
-    setOidcError (state, error) {
-      state.error = error && error.message ? error.message : error
+    setOidcError (state, payload) {
+      state.error = payload.error
+      dispatchErrorEvent(payload)
+    }
+  }
+
+  const errorPayload = (actionName, error) => {
+    return {
+      actionName,
+      error: error && error.message ? error.message : error
+    }
+  }
+
+  const dispatchErrorEvent = payload => {
+    // oidcError is not a userManagementEvent, it is an event implemeted in vuex-oidc,
+    if(typeof oidcEventListeners.oidcError === 'function') {
+      oidcEventListeners.oidcError(payload)
+    }
+    if (storeSettings.dispatchEventsOnWindow) {
+      dispatchCustomBrowserEvent('oidcError', payload)
     }
   }
 
