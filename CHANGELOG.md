@@ -1,5 +1,11 @@
 # vuex-oidc changelog
 
+## 3.1.5
+*2019-09-23*
+
+### Features
+* Add oidcError event
+
 ## 3.1.4
 *2019-09-22*
 
