@@ -248,9 +248,9 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     }
   }
 
-  const errorPayload = (actionName, error) => {
+  const errorPayload = (context, error) => {
     return {
-      actionName,
+      context,
       error: error && error.message ? error.message : error
     }
   }
