@@ -154,7 +154,7 @@ describe('createStoreModule', function() {
 });
 
 function authenticatedContext() {
-  const context = Object.assign(vuexOidc.vuexOidcCreateStoreModule(oidcConfig), {
+  const context = Object.assign(vuexOidc.vuexOidcCreateStoreModule(oidcConfig, {}, { oidcError: oidcMockOidcError }), {
     commit: function(mutation, payload) {},
     dispatch: function(action, payload) {}
   });
@@ -163,7 +163,7 @@ function authenticatedContext() {
 }
 
 function unAuthenticatedContext() {
-  return Object.assign(vuexOidc.vuexOidcCreateStoreModule(oidcConfig), {
+  return Object.assign(vuexOidc.vuexOidcCreateStoreModule(oidcConfig, {}, { oidcError: oidcMockOidcError }), {
     commit: function(mutation, payload) {},
     dispatch: function(action, payload) {}
   });
@@ -204,4 +204,7 @@ function oidcUser() {
   return {
     id_token: require('./id-token-2028-01-01')
   }
+}
+
+function oidcMockOidcError() {
 }
