@@ -195,8 +195,9 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     },
     getOidcUser (context) {
       /* istanbul ignore next */
-      oidcUserManager.getUser().then(user => {
+      return oidcUserManager.getUser().then(user => {
         context.commit('setOidcUser', user)
+        return user
       })
     },
     addOidcEventListener (context, payload) {

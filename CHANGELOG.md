@@ -1,5 +1,11 @@
 # vuex-oidc changelog
 
+## 3.1.6
+*2019-10-12*
+
+### Features
+* Return promise in getOidcUser
+
 ## 3.1.5
 *2019-09-23*
 
