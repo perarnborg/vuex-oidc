@@ -135,7 +135,9 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
                 context.dispatch('authenticateOidcSilent')
               }
             } else {
-              context.dispatch('authenticateOidc', route.fullPath)
+              context.dispatch('authenticateOidc', {
+                redirectPath: route.fullPath
+              })
               hasAccess = false
             }
           } else {
@@ -153,9 +155,12 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
         })
       })
     },
-    authenticateOidc (context, redirectPath) {
-      sessionStorage.setItem('vuex_oidc_active_route', redirectPath)
-      oidcUserManager.signinRedirect().catch(err => {
+    authenticateOidc (context, payload) {
+      if (typeof payload === 'string') {
+        payload = { redirectPath: payload }
+      }
+      sessionStorage.setItem('vuex_oidc_active_route', payload.redirectPath)
+      oidcUserManager.signinRedirect(payload.args || {}).catch(err => {
         context.commit('setOidcError', errorPayload('authenticateOidc', err))
       })
     },
