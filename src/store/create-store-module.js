@@ -160,7 +160,9 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
         payload = { redirectPath: payload }
       }
       sessionStorage.setItem('vuex_oidc_active_route', payload.redirectPath)
-      oidcUserManager.signinRedirect(payload.args || {}).catch(err => {
+      // Take args for signinRedirect from 1) payload or 2) storeSettings if defined there
+      const signinRedirectOptions = payload.signinRedirectOptions || storeSettings.defaultSigninRedirectOptions || {}
+      return oidcUserManager.signinRedirect(signinRedirectOptions).catch(err => {
         context.commit('setOidcError', errorPayload('authenticateOidc', err))
       })
     },
@@ -178,14 +180,17 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
           })
       })
     },
-    authenticateOidcSilent (context) {
-      oidcUserManager.signinSilent().then(user => {
-        context.dispatch('oidcWasAuthenticated', user)
-      })
-      .catch(err => {
-        context.commit('setOidcError', errorPayload('authenticateOidcSilent', err))
-        context.commit('setOidcAuthIsChecked')
-      })
+    authenticateOidcSilent (context, payload = {}) {
+      // Take args for signinSilent from 1) payload or 2) storeSettings if defined there
+      const signinSilentOptions = payload.signinSilentOptions || storeSettings.defaultSigninSilentOptions || {}
+      return oidcUserManager.signinSilent(signinSilentOptions)
+        .then(user => {
+          context.dispatch('oidcWasAuthenticated', user)
+        })
+        .catch(err => {
+          context.commit('setOidcError', errorPayload('authenticateOidcSilent', err))
+          context.commit('setOidcAuthIsChecked')
+        })
     },
     oidcWasAuthenticated (context, user) {
       context.commit('setOidcAuth', user)

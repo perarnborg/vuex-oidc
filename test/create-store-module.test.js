@@ -125,7 +125,53 @@ describe('createStoreModule', function() {
         .catch(function(error) {
           assert.equal(typeof error, 'object');
           context.commit.restore();
-        })
+        });
+    });
+  });
+
+  describe('.actions.authenticateOidc', function() {
+    it('performs signinRedirect with empty arguments by default', function() {
+      const context = unAuthenticatedContext();
+      const payload = {
+        redirectPath: '/'
+      };
+      sinonSandbox.stub(UserManager.prototype, 'signinRedirect').callsFake(resolveArgumentsPromise);
+      return context.actions.authenticateOidc(context, payload)
+        .then(function(signinRedirectOptions) {
+          assert.equal(typeof signinRedirectOptions, 'object');
+          assert.equal(Object.keys(signinRedirectOptions).length, 0);
+        });
+    });
+    it('performs signinRedirect with arguments if specified in payload', function() {
+      const context = unAuthenticatedContext();
+      const payload = {
+        redirectPath: '/',
+        signinRedirectOptions: {
+          useReplaceToNavigate: true
+        }
+      };
+      sinonSandbox.stub(UserManager.prototype, 'signinRedirect').callsFake(resolveArgumentsPromise);
+      return context.actions.authenticateOidc(context, payload)
+        .then(function(signinRedirectOptions) {
+          assert.equal(typeof signinRedirectOptions, 'object');
+          assert.equal(signinRedirectOptions.useReplaceToNavigate, true);
+        });
+    });
+    it('performs signinRedirect with arguments if specified in default options', function() {
+      const context = unAuthenticatedContext({
+        defaultSigninRedirectOptions: {
+          useReplaceToNavigate: true
+        }
+      });
+      const payload = {
+        redirectPath: '/'
+      };
+      sinonSandbox.stub(UserManager.prototype, 'signinRedirect').callsFake(resolveArgumentsPromise);
+      return context.actions.authenticateOidc(context, payload)
+        .then(function(signinRedirectOptions) {
+          assert.equal(typeof signinRedirectOptions, 'object');
+          assert.equal(signinRedirectOptions.useReplaceToNavigate, true);
+        });
     });
   });
 
@@ -153,8 +199,8 @@ describe('createStoreModule', function() {
   });
 });
 
-function authenticatedContext() {
-  const context = Object.assign(vuexOidc.vuexOidcCreateStoreModule(oidcConfig, {}, { oidcError: oidcMockOidcError }), {
+function authenticatedContext(storeSettings = {}) {
+  const context = Object.assign(vuexOidc.vuexOidcCreateStoreModule(oidcConfig, storeSettings, { oidcError: oidcMockOidcError }), {
     commit: function(mutation, payload) {},
     dispatch: function(action, payload) {}
   });
@@ -162,8 +208,8 @@ function authenticatedContext() {
   return context;
 }
 
-function unAuthenticatedContext() {
-  return Object.assign(vuexOidc.vuexOidcCreateStoreModule(oidcConfig, {}, { oidcError: oidcMockOidcError }), {
+function unAuthenticatedContext(storeSettings = {}) {
+  return Object.assign(vuexOidc.vuexOidcCreateStoreModule(oidcConfig, storeSettings, { oidcError: oidcMockOidcError }), {
     commit: function(mutation, payload) {},
     dispatch: function(action, payload) {}
   });
@@ -204,6 +250,12 @@ function oidcUser() {
   return {
     id_token: require('./id-token-2028-01-01')
   }
+}
+
+function resolveArgumentsPromise(argument) {
+  return new Promise(function(resolve) {
+    resolve(argument);
+  });
 }
 
 function oidcMockOidcError() {
