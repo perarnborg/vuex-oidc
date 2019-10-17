@@ -146,7 +146,7 @@ describe('createStoreModule', function() {
       const context = unAuthenticatedContext();
       const payload = {
         redirectPath: '/',
-        signinRedirectOptions: {
+        options: {
           useReplaceToNavigate: true
         }
       };

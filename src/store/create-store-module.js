@@ -159,10 +159,14 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       if (typeof payload === 'string') {
         payload = { redirectPath: payload }
       }
-      sessionStorage.setItem('vuex_oidc_active_route', payload.redirectPath)
+      if (payload.redirectPath) {
+        sessionStorage.setItem('vuex_oidc_active_route', payload.redirectPath)
+      } else {
+        sessionStorage.removeItem('vuex_oidc_active_route')
+      }
       // Take args for signinRedirect from 1) payload or 2) storeSettings if defined there
-      const signinRedirectOptions = payload.signinRedirectOptions || storeSettings.defaultSigninRedirectOptions || {}
-      return oidcUserManager.signinRedirect(signinRedirectOptions).catch(err => {
+      const options = payload.options || storeSettings.defaultSigninRedirectOptions || {}
+      return oidcUserManager.signinRedirect(options).catch(err => {
         context.commit('setOidcError', errorPayload('authenticateOidc', err))
       })
     },
