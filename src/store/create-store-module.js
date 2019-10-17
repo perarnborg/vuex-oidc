@@ -135,7 +135,9 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
                 context.dispatch('authenticateOidcSilent')
               }
             } else {
-              context.dispatch('authenticateOidc', route.fullPath)
+              context.dispatch('authenticateOidc', {
+                redirectPath: route.fullPath
+              })
               hasAccess = false
             }
           } else {
@@ -153,9 +155,18 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
         })
       })
     },
-    authenticateOidc (context, redirectPath) {
-      sessionStorage.setItem('vuex_oidc_active_route', redirectPath)
-      oidcUserManager.signinRedirect().catch(err => {
+    authenticateOidc (context, payload) {
+      if (typeof payload === 'string') {
+        payload = { redirectPath: payload }
+      }
+      if (payload.redirectPath) {
+        sessionStorage.setItem('vuex_oidc_active_route', payload.redirectPath)
+      } else {
+        sessionStorage.removeItem('vuex_oidc_active_route')
+      }
+      // Take options for signinRedirect from 1) payload or 2) storeSettings if defined there
+      const options = payload.options || storeSettings.defaultSigninRedirectOptions || {}
+      return oidcUserManager.signinRedirect(options).catch(err => {
         context.commit('setOidcError', errorPayload('authenticateOidc', err))
       })
     },
@@ -173,14 +184,17 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
           })
       })
     },
-    authenticateOidcSilent (context) {
-      oidcUserManager.signinSilent().then(user => {
-        context.dispatch('oidcWasAuthenticated', user)
-      })
-      .catch(err => {
-        context.commit('setOidcError', errorPayload('authenticateOidcSilent', err))
-        context.commit('setOidcAuthIsChecked')
-      })
+    authenticateOidcSilent (context, payload = {}) {
+      // Take options for signinSilent from 1) payload or 2) storeSettings if defined there
+      const options = payload.options || storeSettings.defaultSigninSilentOptions || {}
+      return oidcUserManager.signinSilent(options)
+        .then(user => {
+          context.dispatch('oidcWasAuthenticated', user)
+        })
+        .catch(err => {
+          context.commit('setOidcError', errorPayload('authenticateOidcSilent', err))
+          context.commit('setOidcAuthIsChecked')
+        })
     },
     oidcWasAuthenticated (context, user) {
       context.commit('setOidcAuth', user)
