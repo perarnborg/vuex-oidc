@@ -1,5 +1,11 @@
 # vuex-oidc changelog
 
+## 3.2.0
+*2019-10-17*
+
+### Features
+* Allow options for authenticateOidc and authenticateOidcSilent actions
+
 ## 3.1.6
 *2019-10-12*
 
