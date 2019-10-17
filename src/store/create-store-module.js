@@ -164,7 +164,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       } else {
         sessionStorage.removeItem('vuex_oidc_active_route')
       }
-      // Take args for signinRedirect from 1) payload or 2) storeSettings if defined there
+      // Take options for signinRedirect from 1) payload or 2) storeSettings if defined there
       const options = payload.options || storeSettings.defaultSigninRedirectOptions || {}
       return oidcUserManager.signinRedirect(options).catch(err => {
         context.commit('setOidcError', errorPayload('authenticateOidc', err))
@@ -185,9 +185,9 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       })
     },
     authenticateOidcSilent (context, payload = {}) {
-      // Take args for signinSilent from 1) payload or 2) storeSettings if defined there
-      const signinSilentOptions = payload.signinSilentOptions || storeSettings.defaultSigninSilentOptions || {}
-      return oidcUserManager.signinSilent(signinSilentOptions)
+      // Take options for signinSilent from 1) payload or 2) storeSettings if defined there
+      const options = payload.options || storeSettings.defaultSigninSilentOptions || {}
+      return oidcUserManager.signinSilent(options)
         .then(user => {
           context.dispatch('oidcWasAuthenticated', user)
         })
