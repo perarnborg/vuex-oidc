@@ -282,7 +282,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     }
   }
 
-  const module = objectAssign([
+  const storeModule = objectAssign([
     storeSettings,
     {
       state,
@@ -292,9 +292,9 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     }
   ])
 
-  if (typeof module.dispatchEventsOnWindow !== 'undefined') {
-    delete module.dispatchEventsOnWindow
+  if (typeof storeModule.dispatchEventsOnWindow !== 'undefined') {
+    delete storeModule.dispatchEventsOnWindow
   }
 
-  return module
+  return storeModule
 }
