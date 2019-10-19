@@ -175,6 +175,52 @@ describe('createStoreModule', function() {
     });
   });
 
+  describe('.actions.authenticateOidcPopup', function() {
+    it('performs signinPopup with empty arguments by default', function() {
+      const context = unAuthenticatedContext();
+      const payload = {
+        redirectPath: '/'
+      };
+      sinonSandbox.stub(UserManager.prototype, 'signinPopup').callsFake(resolveArgumentsPromise);
+      return context.actions.authenticateOidcPopup(context, payload)
+        .then(function(signinPopupOptions) {
+          assert.equal(typeof signinPopupOptions, 'object');
+          assert.equal(Object.keys(signinPopupOptions).length, 0);
+        });
+    });
+    it('performs signinPopup with arguments if specified in payload', function() {
+      const context = unAuthenticatedContext();
+      const payload = {
+        redirectPath: '/',
+        options: {
+          useReplaceToNavigate: true
+        }
+      };
+      sinonSandbox.stub(UserManager.prototype, 'signinPopup').callsFake(resolveArgumentsPromise);
+      return context.actions.authenticateOidcPopup(context, payload)
+        .then(function(signinPopupOptions) {
+          assert.equal(typeof signinPopupOptions, 'object');
+          assert.equal(signinPopupOptions.useReplaceToNavigate, true);
+        });
+    });
+    it('performs signinPopup with arguments if specified in default options', function() {
+      const context = unAuthenticatedContext({
+        defaultSigninRedirectOptions: {
+          useReplaceToNavigate: true
+        }
+      });
+      const payload = {
+        redirectPath: '/'
+      };
+      sinonSandbox.stub(UserManager.prototype, 'signinPopup').callsFake(resolveArgumentsPromise);
+      return context.actions.authenticateOidcPopup(context, payload)
+        .then(function(signinPopupOptions) {
+          assert.equal(typeof signinPopupOptions, 'object');
+          assert.equal(signinPopupOptions.useReplaceToNavigate, true);
+        });
+    });
+  });
+
   describe('.getters.oidcIsRoutePublic', function() {
     it('should not call isPublicRoute when not a function', function() {
       const route = {
