@@ -205,7 +205,7 @@ describe('createStoreModule', function() {
     });
     it('performs signinPopup with arguments if specified in default options', function() {
       const context = unAuthenticatedContext({
-        defaultSigninRedirectOptions: {
+        defaultSigninPopupOptions: {
           useReplaceToNavigate: true
         }
       });

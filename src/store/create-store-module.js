@@ -155,7 +155,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
         })
       })
     },
-    authenticateOidc (context, payload) {
+    authenticateOidc (context, payload = {}) {
       if (typeof payload === 'string') {
         payload = { redirectPath: payload }
       }
@@ -195,6 +195,26 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
           context.commit('setOidcError', errorPayload('authenticateOidcSilent', err))
           context.commit('setOidcAuthIsChecked')
         })
+    },
+    authenticateOidcPopup (context, payload = {}) {
+      // Take options for signinPopup from 1) payload or 2) storeSettings if defined there
+      const options = payload.options || storeSettings.defaultSigninPopupOptions || {}
+      return oidcUserManager.signinPopup(options).catch(err => {
+        context.commit('setOidcError', errorPayload('authenticateOidcPopup', err))
+      })
+    },
+    oidcSignInPopupCallback (context, url) {
+      return new Promise((resolve, reject) => {
+        oidcUserManager.signinPopupCallback(url)
+          .then(user => {
+            context.dispatch('oidcWasAuthenticated', user)
+          })
+          .catch(err => {
+            context.commit('setOidcError', errorPayload('oidcSignInPopupCallback', err))
+            context.commit('setOidcAuthIsChecked')
+            reject(err)
+          })
+      })
     },
     oidcWasAuthenticated (context, user) {
       context.commit('setOidcAuth', user)
