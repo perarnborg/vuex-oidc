@@ -24,7 +24,8 @@ const settingsThatAreSnakeCasedInOidcClient = [
   'acrValues',
   'postLogoutRedirectUri',
   'popupRedirectUri',
-  'silentRedirectUri'
+  'silentRedirectUri',
+  'popupRedirectUri'
 ]
 
 const snakeCasedSettings = (oidcSettings) => {
@@ -44,10 +45,13 @@ export const getOidcConfig = (oidcSettings) => {
   ])
 }
 
-export const getOidcCallbackPath = (oidcConfig, routeBase = '/') => {
-  const domainStartsAt = '://'
-  const hostAndPath = oidcConfig.redirect_uri.substr(oidcConfig.redirect_uri.indexOf(domainStartsAt) + domainStartsAt.length)
-  return hostAndPath.substr(hostAndPath.indexOf(routeBase) + routeBase.length - 1).replace(/\/$/, '')
+export const getOidcCallbackPath = (callbackUri, routeBase = '/') => {
+  if (callbackUri) {
+    const domainStartsAt = '://'
+    const hostAndPath = callbackUri.substr(callbackUri.indexOf(domainStartsAt) + domainStartsAt.length)
+    return hostAndPath.substr(hostAndPath.indexOf(routeBase) + routeBase.length - 1).replace(/\/$/, '')
+  }
+  return null
 }
 
 export const createOidcUserManager = (oidcSettings) => {
