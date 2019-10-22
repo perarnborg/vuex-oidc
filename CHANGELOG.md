@@ -1,5 +1,14 @@
 # vuex-oidc changelog
 
+## 3.3.0
+*2019-10-22*
+
+### Features
+* Implement signinPopup with authenticateOidcPopup action
+
+### Chore
+* Change name of removeUser action to removeOidcUser. removeUser is still a synonym
+
 ## 3.2.0
 *2019-10-17*
 
