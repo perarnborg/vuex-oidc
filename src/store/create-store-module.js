@@ -9,7 +9,8 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     { namespaced: false },
     storeSettings
   ])
-  const oidcCallbackPath = getOidcCallbackPath(oidcConfig, storeSettings.routeBase || '/')
+  const oidcCallbackPath = getOidcCallbackPath(oidcConfig.redirect_uri, storeSettings.routeBase || '/')
+  const oidcPopupCallbackPath = getOidcCallbackPath(oidcConfig.popup_redirect_uri, storeSettings.routeBase || '/')
 
   // Add event listeners passed into factory function
   Object.keys(oidcEventListeners).forEach(eventName => {
@@ -55,6 +56,9 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       return true
     }
     if (route.path && route.path.replace(/\/$/, '') === oidcCallbackPath) {
+      return true
+    }
+    if (route.path && route.path.replace(/\/$/, '') === oidcPopupCallbackPath) {
       return true
     }
     return false
@@ -155,7 +159,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
         })
       })
     },
-    authenticateOidc (context, payload) {
+    authenticateOidc (context, payload = {}) {
       if (typeof payload === 'string') {
         payload = { redirectPath: payload }
       }
@@ -196,6 +200,27 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
           context.commit('setOidcAuthIsChecked')
         })
     },
+    authenticateOidcPopup (context, payload = {}) {
+      // Take options for signinPopup from 1) payload or 2) storeSettings if defined there
+      const options = payload.options || storeSettings.defaultSigninPopupOptions || {}
+      return oidcUserManager.signinPopup(options)
+        .then(user => {
+          context.dispatch('oidcWasAuthenticated', user)
+        })
+        .catch(err => {
+          context.commit('setOidcError', errorPayload('authenticateOidcPopup', err))
+        })
+    },
+    oidcSignInPopupCallback (context, url) {
+      return new Promise((resolve, reject) => {
+        oidcUserManager.signinPopupCallback(url)
+          .catch(err => {
+            context.commit('setOidcError', errorPayload('oidcSignInPopupCallback', err))
+            context.commit('setOidcAuthIsChecked')
+            reject(err)
+          })
+      })
+    },
     oidcWasAuthenticated (context, user) {
       context.commit('setOidcAuth', user)
       if (!context.state.events_are_bound) {
@@ -230,7 +255,11 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     },
     removeUser (context) {
       /* istanbul ignore next */
-      oidcUserManager.removeUser().then(() => {
+      return context.dispatch('removeOidcUser')
+    },
+    removeOidcUser (context) {
+      /* istanbul ignore next */
+      return oidcUserManager.removeUser().then(() => {
         context.commit('unsetOidcAuth')
       })
     }
