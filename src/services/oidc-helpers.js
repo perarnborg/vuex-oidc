@@ -24,8 +24,7 @@ const settingsThatAreSnakeCasedInOidcClient = [
   'acrValues',
   'postLogoutRedirectUri',
   'popupRedirectUri',
-  'silentRedirectUri',
-  'popupRedirectUri'
+  'silentRedirectUri'
 ]
 
 const snakeCasedSettings = (oidcSettings) => {
