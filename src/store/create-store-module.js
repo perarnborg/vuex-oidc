@@ -255,11 +255,11 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     },
     removeUser (context) {
       /* istanbul ignore next */
-      context.dispatch('removeOidcUser')
+      return context.dispatch('removeOidcUser')
     },
     removeOidcUser (context) {
       /* istanbul ignore next */
-      oidcUserManager.removeUser().then(() => {
+      return oidcUserManager.removeUser().then(() => {
         context.commit('unsetOidcAuth')
       })
     }
