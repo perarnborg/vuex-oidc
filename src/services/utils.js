@@ -22,5 +22,5 @@ export const firstLetterUppercase = (string) => {
 }
 
 export const camelCaseToSnakeCase = (string) => {
-  return string.split(/(?=[A-Z])/).join('_').toLowerCase();
+  return string.split(/(?=[A-Z])/).join('_').toLowerCase()
 }
