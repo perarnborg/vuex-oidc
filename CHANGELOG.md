@@ -1,5 +1,12 @@
 # vuex-oidc changelog
 
+## 3.3.1
+*2019-11-06*
+
+### Chore
+* Implementing linting with StandardJS
+* Remove vue-router as peer dependency
+
 ## 3.3.0
 *2019-10-22*
 
