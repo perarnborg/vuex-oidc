@@ -52,7 +52,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
   }
 
   const routeIsOidcCallback = (route) => {
-    if (route.meta.isOidcCallback) {
+    if (route.meta && route.meta.isOidcCallback) {
       return true
     }
     if (route.path && route.path.replace(/\/$/, '') === oidcCallbackPath) {
@@ -65,7 +65,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
   }
 
   const routeIsPublic = (route) => {
-    if (route.meta.isPublic) {
+    if (route.meta && route.meta.isPublic) {
       return true
     }
     if (storeSettings.publicRoutePaths) {

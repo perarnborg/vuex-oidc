@@ -23,8 +23,7 @@
   "peerDependencies": {
     "oidc-client": ">= 1.6.1",
     "vue": ">= 2.5.0",
-    "vuex": ">= 3.0.0",
-    "vue-router": ">= 3.0.0"
+    "vuex": ">= 3.0.0"
   },
   "devDependencies": {
     "acorn": "^7.0.0",
