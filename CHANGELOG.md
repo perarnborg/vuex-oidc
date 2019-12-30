@@ -1,5 +1,14 @@
 # vuex-oidc changelog
 
+## 3.4.0
+*2019-12-30*
+
+### Chore
+* Update dependencies
+
+### Features
+* Add payload to signoutOidc which is passed on as args to signoutRedirect
+
 ## 3.3.1
 *2019-11-06*
 
