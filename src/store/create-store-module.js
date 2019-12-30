@@ -247,9 +247,9 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       /* istanbul ignore next */
       removeUserManagerEventListener(oidcUserManager, payload.eventName, payload.eventListener)
     },
-    signOutOidc (context) {
+    signOutOidc (context, payload) {
       /* istanbul ignore next */
-      oidcUserManager.signoutRedirect().then(() => {
+      oidcUserManager.signoutRedirect(payload).then(() => {
         context.commit('unsetOidcAuth')
       })
     },
