@@ -3,7 +3,8 @@ import { UserManager, WebStorageStateStore } from 'oidc-client'
 
 const defaultOidcConfig = {
   userStore: new WebStorageStateStore(),
-  loadUserInfo: true
+  loadUserInfo: true,
+  automaticSilentSignin: true
 }
 
 const requiredConfigProperties = [
