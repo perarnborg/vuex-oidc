@@ -135,7 +135,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
               context.commit('unsetOidcAuth')
             }
             if (routeIsPublic(route)) {
-              if (oidcConfig.silent_redirect_uri) {
+              if (oidcConfig.silent_redirect_uri && oidcConfig.automaticSilentSignin) {
                 context.dispatch('authenticateOidcSilent')
               }
             } else {
