@@ -18,9 +18,22 @@ export interface VuexOidcClientSettings extends OidcClientSettings {
   automaticSilentRenew?: boolean;
 }
 
+export interface VuexOidcSigninRedirectOptions {
+  useReplaceToNavigate?: boolean;
+}
+
+export interface VuexOidcSigninSilentOptions {}
+
+export interface VuexOidcSigninPopupOptions {}
+
 export interface VuexOidcStoreSettings {
   namespaced?: boolean;
   dispatchEventsOnWindow?: boolean;
+  isPublicRoute?: (route: Route) => boolean;
+  routeBase?: string;
+  defaultSigninRedirectOptions?: VuexOidcSigninRedirectOptions;
+  defaultSigninSilentOptions?: VuexOidcSigninSilentOptions;
+  defaultSigninPopupOptions?: VuexOidcSigninPopupOptions;
 }
 
 export interface VuexOidcStoreListeners {
