@@ -69,6 +69,10 @@ export function vuexOidcCreateRouterMiddleware(store: Store<any>, namespace?: st
 
 export function vuexOidcProcessSilentSignInCallback(): void;
 
+export function vuexOidcProcessSignInCallback(settings: VuexOidcClientSettings): void;
+
+export function vuexOidcGetOidcCallbackPath(callbackUri: string, routeBase?: string): void;
+
 export namespace vuexOidcUtils {
   export function objectAssign(objs: any[]): any;
 
