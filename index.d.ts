@@ -123,6 +123,7 @@ export interface VuexOidcStoreActions {
     eventListener: (...args: any[]) => void;
   }) => void;
   signOutOidc: () => void;
+  removeOidcUser: () => void;
 }
 
 export interface VuexOidcStoreMutations {
