@@ -107,9 +107,10 @@ export interface VuexOidcStoreGetters {
 
 export interface VuexOidcStoreActions {
   oidcCheckAccess: (route: Route) => Promise<boolean>;
-  authenticateOidc: (redirectPath: string) => void;
+  authenticateOidc: (payload: { redirectPath?: string }) => Promise<void>;
+  authenticateOidcSilent: (payload: { options?: VuexOidcSigninSilentOptions }) => Promise<void>;
+  authenticateOidcPopup: (payload: { options?: VuexOidcSigninPopupOptions }) => Promise<void>;
   oidcSignInCallback: () => Promise<string>;
-  authenticateOidcSilent: () => void;
   oidcWasAuthenticated: (user: User) => void;
   getOidcUser: () => void;
   addOidcEventListener: (payload: {
