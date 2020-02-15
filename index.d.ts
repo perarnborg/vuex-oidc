@@ -15,6 +15,7 @@ export interface VuexOidcClientSettings extends OidcClientSettings {
   postLogoutRedirectUri?: string;
   popupRedirectUri?: string;
   silentRedirectUri?: string;
+  automaticSilentRenew?: boolean;
 }
 
 export interface VuexOidcStoreSettings {
