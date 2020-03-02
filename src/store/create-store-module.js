@@ -232,6 +232,17 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       }
       context.commit('setOidcAuthIsChecked')
     },
+    storeOidcUser (context, user) {
+      return oidcUserManager.storeUser(user)
+        .then(() => oidcUserManager.getUser())
+        .then(user => context.dispatch('oidcWasAuthenticated', user))
+        .then(() => {})
+        .catch(err => {
+          context.commit('setOidcError', errorPayload('storeOidcUser', err))
+          context.commit('setOidcAuthIsChecked')
+          throw err
+        })
+    },
     getOidcUser (context) {
       /* istanbul ignore next */
       return oidcUserManager.getUser().then(user => {

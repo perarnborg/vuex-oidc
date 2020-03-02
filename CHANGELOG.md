@@ -1,5 +1,10 @@
 # vuex-oidc changelog
 
+## Unreleased
+
+### Features
+* Add `storeOidcUser` to actions
+
 ## 3.4.0
 *2019-12-30*
 
