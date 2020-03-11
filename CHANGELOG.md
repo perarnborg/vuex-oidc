@@ -1,9 +1,23 @@
 # vuex-oidc changelog
 
-## Unreleased
+## 3.4.3
+*2020-03-11*
 
 ### Features
-* Add `storeOidcUser` to actions
+* Add storeOidcUser action
+* Add clearStaleState action
+
+## 3.4.2
+*2020-03-11*
+
+### Features
+* Add signOutOidcCallback, signOutPopupOidc and signOutPopupOidcCallback actions
+
+## 3.4.1
+*2020-02-06*
+
+### Features
+* Add automaticSilentSignin option to config
 
 ## 3.4.0
 *2019-12-30*
