@@ -262,6 +262,9 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       return oidcUserManager.removeUser().then(() => {
         context.commit('unsetOidcAuth')
       })
+    },
+    clearStaleState () {
+      return oidcUserManager.clearStaleState()
     }
   }
 
