@@ -249,9 +249,23 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     },
     signOutOidc (context, payload) {
       /* istanbul ignore next */
-      oidcUserManager.signoutRedirect(payload).then(() => {
+      return oidcUserManager.signoutRedirect(payload).then(() => {
         context.commit('unsetOidcAuth')
       })
+    },
+    signOutOidcCallback (context) {
+      /* istanbul ignore next */
+      return oidcUserManager.signoutRedirectCallback()
+    },
+    signOutPopupOidc (context, payload) {
+      /* istanbul ignore next */
+      return oidcUserManager.signoutPopup(payload).then(() => {
+        context.commit('unsetOidcAuth')
+      })
+    },
+    signOutPopupOidcCallback (context) {
+      /* istanbul ignore next */
+      return oidcUserManager.signoutPopupCallback()
     },
     removeUser (context) {
       /* istanbul ignore next */
