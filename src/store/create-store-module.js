@@ -129,7 +129,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
           })
         })
         const isAuthenticatedInStore = isAuthenticated(context.state)
-        getUserPromise.then(user => {
+        getUserPromise.then(async user => {
           if (!user || user.expired) {
             if (isAuthenticatedInStore) {
               context.commit('unsetOidcAuth')
@@ -139,10 +139,18 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
                 context.dispatch('authenticateOidcSilent')
               }
             } else {
-              context.dispatch('authenticateOidc', {
-                redirectPath: route.fullPath
-              })
-              hasAccess = false
+              if (oidcConfig.silent_redirect_uri && oidcConfig.automaticSilentSignin) {
+                await context.dispatch("authenticateOidcSilent");
+              }
+
+              if (isAuthenticated(context.state)) {
+                hasAccess = true;
+              } else {
+                context.dispatch("authenticateOidc", {
+                  redirectPath: route.fullPath
+                });
+                hasAccess = false;
+              }
             }
           } else {
             context.dispatch('oidcWasAuthenticated', user)
