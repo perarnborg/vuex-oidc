@@ -37,6 +37,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
   const state = {
     access_token: null,
     id_token: null,
+    refresh_token: null,
     user: null,
     scopes: null,
     is_checked: false,
@@ -99,6 +100,12 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     },
     oidcIdTokenExp: (state) => {
       return tokenExp(state.id_token)
+    },
+    oidcRefreshToken: (state) => {
+      return tokenIsExpired(state.refresh_token) ? null : state.refresh_token
+    },
+    oidcRefreshTokenExp: (state) => {
+      return tokenExp(state.refresh_token)
     },
     oidcAuthenticationIsChecked: (state) => {
       return state.is_checked
@@ -298,6 +305,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     setOidcAuth (state, user) {
       state.id_token = user.id_token
       state.access_token = user.access_token
+      state.refresh_token = user.refresh_token
       state.user = user.profile
       state.scopes = user.scopes
       state.error = null
@@ -308,6 +316,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     unsetOidcAuth (state) {
       state.id_token = null
       state.access_token = null
+      state.refresh_token = null
       state.user = null
     },
     setOidcAuthIsChecked (state) {
