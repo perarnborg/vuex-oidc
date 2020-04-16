@@ -1,5 +1,13 @@
 # vuex-oidc changelog
 
+## 3.5.0
+*2020-04-16*
+
+### Features
+* Add type script typings
+* isAuthenticatedBy setting that can use access_token for isAuthenticated getter and access checker
+* Store refresh token in store
+
 ## 3.4.3
 *2020-03-11*
 
