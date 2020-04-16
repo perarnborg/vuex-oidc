@@ -6,7 +6,10 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
   const oidcConfig = getOidcConfig(oidcSettings)
   const oidcUserManager = createOidcUserManager(oidcSettings)
   storeSettings = objectAssign([
-    { namespaced: false },
+    {
+      namespaced: false,
+      isAuthenticatedBy: 'id_token'
+    },
     storeSettings
   ])
   const oidcCallbackPath = getOidcCallbackPath(oidcConfig.redirect_uri, storeSettings.routeBase || '/')
@@ -46,9 +49,10 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
   }
 
   const isAuthenticated = (state) => {
-    if (state.id_token) {
+    if (state[storeSettings.isAuthenticatedBy]) {
       return true
     }
+
     return false
   }
 
