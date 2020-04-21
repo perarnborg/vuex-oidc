@@ -1,5 +1,13 @@
 # vuex-oidc changelog
 
+## 3.5.1
+*2020-04-21*
+
+### Features
+* Add 2 missing type script typings
+
+# vuex-oidc changelog
+
 ## 3.5.0
 *2020-04-16*
 
