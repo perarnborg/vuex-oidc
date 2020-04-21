@@ -31,6 +31,7 @@ export interface VuexOidcStoreSettings {
   namespaced?: boolean;
   dispatchEventsOnWindow?: boolean;
   isPublicRoute?: (route: Route) => boolean;
+  publicRoutePaths?: string[];
   routeBase?: string;
   defaultSigninRedirectOptions?: VuexOidcSigninRedirectOptions;
   defaultSigninSilentOptions?: VuexOidcSigninSilentOptions;
