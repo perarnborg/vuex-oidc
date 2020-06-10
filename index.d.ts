@@ -43,8 +43,9 @@ export interface VuexOidcStoreListeners {
   userUnloaded?: () => void;
   accessTokenExpiring?: () => void;
   accessTokenExpired?: () => void;
-  silentRenewError: () => void;
+  silentRenewError?: () => void;
   userSignedOut?: () => void;
+  oidcError?: () => void;
 }
 
 export interface VuexOidcState {
@@ -109,13 +110,13 @@ export interface VuexOidcStoreGetters {
 
 export interface VuexOidcStoreActions {
   oidcCheckAccess: (route: Route) => Promise<boolean>;
-  authenticateOidc: (payload: { redirectPath?: string }) => Promise<void>;
-  authenticateOidcSilent: (payload: { options?: VuexOidcSigninSilentOptions }) => Promise<void>;
-  authenticateOidcPopup: (payload: { options?: VuexOidcSigninPopupOptions }) => Promise<void>;
+  authenticateOidc: (payload?: string | { [key: string]: any }) => Promise<void>;
+  authenticateOidcSilent: (payload?: { options?: VuexOidcSigninSilentOptions }) => Promise<void>;
+  authenticateOidcPopup: (payload?: { options?: VuexOidcSigninPopupOptions }) => Promise<void>;
   oidcSignInCallback: (url?: string) => Promise<string>;
   oidcSignInPopupCallback: (url?: string) => Promise<User | undefined>;
   oidcWasAuthenticated: (user: User) => void;
-  getOidcUser: () => void;
+  getOidcUser: () => () => Promise<User>;
   addOidcEventListener: (payload: {
     eventName: string;
     eventListener: (...args: any[]) => void;
@@ -125,7 +126,12 @@ export interface VuexOidcStoreActions {
     eventListener: (...args: any[]) => void;
   }) => void;
   signOutOidc: () => void;
+  signOutOidcCallback: () => void;
+  signOutPopupOidcCallback: () => void;
+  storeOidcUser: (user: User) => void;
+  removeUser: () => void;
   removeOidcUser: () => void;
+  clearStaleState: () => void;
 }
 
 export interface VuexOidcStoreMutations {
