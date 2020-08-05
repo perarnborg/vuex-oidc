@@ -1,12 +1,16 @@
 # vuex-oidc changelog
 
+## 3.5.2
+*2020-08-05*
+
+### Bug fixes
+* Fix type error when dispatching getOidcUser if there is no user
+
 ## 3.5.1
 *2020-04-21*
 
 ### Features
 * Add 2 missing type script typings
-
-# vuex-oidc changelog
 
 ## 3.5.0
 *2020-04-16*
