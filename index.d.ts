@@ -36,6 +36,7 @@ export interface VuexOidcStoreSettings {
   defaultSigninRedirectOptions?: VuexOidcSigninRedirectOptions;
   defaultSigninSilentOptions?: VuexOidcSigninSilentOptions;
   defaultSigninPopupOptions?: VuexOidcSigninPopupOptions;
+  isAuthenticatedBy?: 'access_token'|'id_token';
 }
 
 export interface VuexOidcStoreListeners {
