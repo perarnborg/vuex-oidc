@@ -315,7 +315,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       state.error = null
     },
     setOidcUser (state, user) {
-      state.user = user.profile
+      state.user = user ? user.profile : null
     },
     unsetOidcAuth (state) {
       state.id_token = null
