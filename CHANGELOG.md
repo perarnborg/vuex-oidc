@@ -1,5 +1,11 @@
 # vuex-oidc changelog
 
+## 3.5.3
+*2020-08-05*
+
+### Fixes
+* Fix type script inconsistencies
+
 ## 3.5.2
 *2020-08-05*
 
