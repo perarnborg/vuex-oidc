@@ -63,6 +63,8 @@ describe('createStoreModule', function() {
       it('should resolve false for protected routes if not authenticated, and also dispatch auth redirect action', function() {
         const context = unAuthenticatedContext();
         sinon.spy(context, 'dispatch');
+        sinonSandbox.stub(UserManager.prototype, 'signinSilent').callsFake(silentSigningFailedPromise);
+        sinonSandbox.stub(UserManager.prototype, 'getUser').callsFake(getNoUserPromise);
         return storeModule.actions.oidcCheckAccess(context, protectedRoute())
           .then(function(hasAccess) {
             assert.equal(hasAccess, false);
@@ -90,6 +92,8 @@ describe('createStoreModule', function() {
         const context = authenticatedContext();
         sinon.spy(context, 'dispatch');
         sinon.spy(context, 'commit');
+        sinonSandbox.stub(UserManager.prototype, 'signinSilent').callsFake(silentSigningFailedPromise);
+        sinonSandbox.stub(UserManager.prototype, 'getUser').callsFake(getNoUserPromise);
         return storeModule.actions.oidcCheckAccess(context, protectedRoute())
           .then(function(hasAccess) {
             assert.equal(hasAccess, false);
@@ -243,6 +247,18 @@ function protectedRoute() {
 function getUserPromise() {
   return new Promise(function(resolve) {
     resolve(oidcUser());
+  });
+}
+
+function getNoUserPromise() {
+  return new Promise(function(resolve) {
+    resolve(null);
+  });
+}
+
+function silentSigningFailedPromise() {
+  return new Promise(function(resolve, reject) {
+    reject(new Error('No user'));
   });
 }
 
