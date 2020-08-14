@@ -27,8 +27,8 @@
     "vuex": ">= 3.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
+    "@babel/core": "^7.11.1",
+    "@babel/preset-env": "^7.11.0",
     "acorn": "^7.0.0",
     "atob": "^2.1.2",
     "eslint": "^6.6.0",
