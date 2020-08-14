@@ -6,6 +6,13 @@
 ### Fixes
 * Fix type script inconsistencies
 
+## 3.6.0
+*2020-08-14*
+
+### Chore
+* Update Babel
+* Update oidc-client
+
 ## 3.5.2
 *2020-08-05*
 
