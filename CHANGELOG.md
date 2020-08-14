@@ -1,10 +1,10 @@
 # vuex-oidc changelog
 
-## 3.5.3
-*2020-08-05*
+## 3.7.0
+*2020-08-14*
 
-### Fixes
-* Fix type script inconsistencies
+### Feature
+* Attempt silent signin on protected routes
 
 ## 3.6.0
 *2020-08-14*
@@ -12,6 +12,12 @@
 ### Chore
 * Update Babel
 * Update oidc-client
+
+## 3.5.3
+*2020-08-05*
+
+### Fixes
+* Fix type script inconsistencies
 
 ## 3.5.2
 *2020-08-05*
