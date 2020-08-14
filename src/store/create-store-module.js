@@ -56,6 +56,19 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     return false
   }
 
+  const authenticateOidcSilent = (context, payload = {}) => {
+    // Take options for signinSilent from 1) payload or 2) storeSettings if defined there
+    const options = payload.options || storeSettings.defaultSigninSilentOptions || {}
+    return oidcUserManager.signinSilent(options)
+      .then(user => {
+        context.dispatch('oidcWasAuthenticated', user)
+      })
+      .catch(err => {
+        context.commit('setOidcError', errorPayload('authenticateOidcSilent', err))
+        context.commit('setOidcAuthIsChecked')
+      })
+  }
+
   const routeIsOidcCallback = (route) => {
     if (route.meta && route.meta.isOidcCallback) {
       return true
@@ -142,17 +155,41 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
         const isAuthenticatedInStore = isAuthenticated(context.state)
         getUserPromise.then(user => {
           if (!user || user.expired) {
-            if (isAuthenticatedInStore) {
-              context.commit('unsetOidcAuth')
-            }
+            const authenticateSilently = oidcConfig.silent_redirect_uri && oidcConfig.automaticSilentSignin
             if (routeIsPublic(route)) {
-              if (oidcConfig.silent_redirect_uri && oidcConfig.automaticSilentSignin) {
+              if (isAuthenticatedInStore) {
+                context.commit('unsetOidcAuth')
+              }
+              if (authenticateSilently) {
                 context.dispatch('authenticateOidcSilent')
               }
             } else {
-              context.dispatch('authenticateOidc', {
-                redirectPath: route.fullPath
-              })
+              const authenticate = () => {
+                if (isAuthenticatedInStore) {
+                  context.commit('unsetOidcAuth')
+                }
+                context.dispatch('authenticateOidc', {
+                  redirectPath: route.fullPath
+                })
+              }
+              // If silent signin is set up, try to authenticate silently before denying access
+              if (authenticateSilently) {
+                authenticateOidcSilent(context)
+                  .then(() => {
+                    oidcUserManager.getUser().then(user => {
+                      if (!user) {
+                        authenticate()
+                      }
+                      resolve(!!user)
+                    }).catch(() => {
+                      authenticate()
+                      resolve(false)
+                    })
+                  })
+                return
+              }
+              // If no silent signin is set up, perform explicit authentication and deny access
+              authenticate()
               hasAccess = false
             }
           } else {
@@ -200,16 +237,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       })
     },
     authenticateOidcSilent (context, payload = {}) {
-      // Take options for signinSilent from 1) payload or 2) storeSettings if defined there
-      const options = payload.options || storeSettings.defaultSigninSilentOptions || {}
-      return oidcUserManager.signinSilent(options)
-        .then(user => {
-          context.dispatch('oidcWasAuthenticated', user)
-        })
-        .catch(err => {
-          context.commit('setOidcError', errorPayload('authenticateOidcSilent', err))
-          context.commit('setOidcAuthIsChecked')
-        })
+      authenticateOidcSilent(context, payload)
     },
     authenticateOidcPopup (context, payload = {}) {
       // Take options for signinPopup from 1) payload or 2) storeSettings if defined there
