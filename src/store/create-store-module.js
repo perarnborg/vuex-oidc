@@ -237,7 +237,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       })
     },
     authenticateOidcSilent (context, payload = {}) {
-      authenticateOidcSilent(context, payload)
+      return authenticateOidcSilent(context, payload)
     },
     authenticateOidcPopup (context, payload = {}) {
       // Take options for signinPopup from 1) payload or 2) storeSettings if defined there
