@@ -320,14 +320,21 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     },
     signOutOidcSilent (context) {
       /* istanbul ignore next */
-      oidcUserManager.createSignoutRequest().then((signoutRequest) => {
-        openUrlWithIframe(signoutRequest.url)
-          .then(() => {
-            context.commit('unsetOidcAuth')
-          })
-          .catch((err) => {
-            console.error('signOutOidcSilent failed: ' + err.message)
-          })
+      return new Promise((resolve, reject) => {
+        try {
+          oidcUserManager.createSignoutRequest()
+            .then((signoutRequest) => {
+              openUrlWithIframe(signoutRequest.url)
+                .then(() => {
+                  context.commit('unsetOidcAuth')
+                  resolve()
+                })
+                .catch((err) => reject(err))
+            })
+            .catch((err) => reject(err))
+        } catch (err) {
+          reject(err)
+        }
       })
     },
     removeUser (context) {
