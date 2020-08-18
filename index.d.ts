@@ -117,7 +117,7 @@ export interface VuexOidcStoreActions {
   oidcSignInCallback: (url?: string) => Promise<string>;
   oidcSignInPopupCallback: (url?: string) => Promise<User | undefined>;
   oidcWasAuthenticated: (user: User) => void;
-  getOidcUser: () => () => Promise<User>;
+  getOidcUser: () => Promise<User>;
   addOidcEventListener: (payload: {
     eventName: string;
     eventListener: (...args: any[]) => void;

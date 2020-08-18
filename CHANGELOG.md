@@ -1,5 +1,12 @@
 # vuex-oidc changelog
 
+## 3.7.1
+*2020-08-17*
+
+### Bug fixes
+* Fix authenticateOidcSilent action not returning promise
+* Fix incorrect type script type for getOidcUser action
+
 ## 3.7.0
 *2020-08-14*
 
