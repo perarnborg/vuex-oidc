@@ -1,6 +1,7 @@
 import { objectAssign } from '../services/utils'
 import { getOidcConfig, getOidcCallbackPath, createOidcUserManager, addUserManagerEventListener, removeUserManagerEventListener, tokenIsExpired, tokenExp } from '../services/oidc-helpers'
 import { dispatchCustomBrowserEvent } from '../services/browser-event'
+import { openUrlWithIframe } from '../services/navigation'
 
 export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
   const oidcConfig = getOidcConfig(oidcSettings)
@@ -316,6 +317,25 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     signOutPopupOidcCallback (context) {
       /* istanbul ignore next */
       return oidcUserManager.signoutPopupCallback()
+    },
+    signOutOidcSilent (context) {
+      /* istanbul ignore next */
+      return new Promise((resolve, reject) => {
+        try {
+          oidcUserManager.createSignoutRequest()
+            .then((signoutRequest) => {
+              openUrlWithIframe(signoutRequest.url)
+                .then(() => {
+                  context.commit('unsetOidcAuth')
+                  resolve()
+                })
+                .catch((err) => reject(err))
+            })
+            .catch((err) => reject(err))
+        } catch (err) {
+          reject(err)
+        }
+      })
     },
     removeUser (context) {
       /* istanbul ignore next */

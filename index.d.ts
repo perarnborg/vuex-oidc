@@ -129,6 +129,7 @@ export interface VuexOidcStoreActions {
   signOutOidc: () => void;
   signOutOidcCallback: () => void;
   signOutPopupOidcCallback: () => void;
+  signOutOidcSilent: () => Promise<void>;
   storeOidcUser: (user: User) => void;
   removeUser: () => void;
   removeOidcUser: () => void;
