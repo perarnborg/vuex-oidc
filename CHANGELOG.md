@@ -1,5 +1,11 @@
 # vuex-oidc changelog
 
+## 3.8.0
+*2020-08-18*
+
+### Features
+* signOutOidcSilent action added
+
 ## 3.7.2
 *2020-08-18*
 
