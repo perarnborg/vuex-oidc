@@ -1,5 +1,11 @@
 # vuex-oidc changelog
 
+## 3.7.2
+*2020-08-17*
+
+### Fixes
+* Change import of oidc-client
+
 ## 3.7.1
 *2020-08-17*
 
