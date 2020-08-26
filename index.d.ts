@@ -59,6 +59,8 @@ export interface VuexOidcState {
   error: string | null;
 }
 
+type SilentSignInFallBackFunction = (err: any) => void;
+
 export function vuexOidcCreateUserManager(settings: VuexOidcClientSettings): UserManager;
 
 export function vuexOidcCreateStoreModule(
@@ -72,6 +74,8 @@ export function vuexOidcCreateNuxtRouterMiddleware(namespace?: string): any;
 export function vuexOidcCreateRouterMiddleware(store: Store<any>, namespace?: string): any;
 
 export function vuexOidcProcessSilentSignInCallback(): void;
+
+export function vuexOidcProcessSilentSignInCallbackWithFallback(fallback: SilentSignInFallBackFunction): void;
 
 export function vuexOidcProcessSignInCallback(settings: VuexOidcClientSettings): void;
 
