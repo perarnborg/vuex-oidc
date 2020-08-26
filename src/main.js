@@ -1,24 +1,32 @@
-import { createOidcUserManager, processSilentSignInCallback, processSignInCallback, getOidcCallbackPath } from './services/oidc-helpers'
-import createStoreModule from './store/create-store-module'
-import createRouterMiddleware from './router/create-router-middleware'
-import createNuxtRouterMiddleware from './router/create-nuxt-router-middleware'
-import * as utils from './services/utils'
-import { dispatchCustomBrowserEvent } from './services/browser-event'
+import {
+  createOidcUserManager,
+  processSilentSignInCallback,
+  processSignInCallback,
+  getOidcCallbackPath,
+  processSilentSignInCallbackWithFallback,
+} from "./services/oidc-helpers";
+import createStoreModule from "./store/create-store-module";
+import createRouterMiddleware from "./router/create-router-middleware";
+import createNuxtRouterMiddleware from "./router/create-nuxt-router-middleware";
+import * as utils from "./services/utils";
+import { dispatchCustomBrowserEvent } from "./services/browser-event";
 
-export const vuexOidcCreateUserManager = createOidcUserManager
+export const vuexOidcCreateUserManager = createOidcUserManager;
 
-export const vuexOidcCreateStoreModule = createStoreModule
+export const vuexOidcCreateStoreModule = createStoreModule;
 
-export const vuexOidcCreateNuxtRouterMiddleware = createNuxtRouterMiddleware
+export const vuexOidcCreateNuxtRouterMiddleware = createNuxtRouterMiddleware;
 
-export const vuexOidcCreateRouterMiddleware = createRouterMiddleware
+export const vuexOidcCreateRouterMiddleware = createRouterMiddleware;
 
-export const vuexOidcProcessSilentSignInCallback = processSilentSignInCallback
+export const vuexOidcProcessSilentSignInCallback = processSilentSignInCallback;
 
-export const vuexOidcProcessSignInCallback = processSignInCallback
+export const vuexOidcProcessSilentSignInCallbackWithFallback = processSilentSignInCallbackWithFallback;
 
-export const vuexOidcGetOidcCallbackPath = getOidcCallbackPath
+export const vuexOidcProcessSignInCallback = processSignInCallback;
 
-export const vuexOidcUtils = utils
+export const vuexOidcGetOidcCallbackPath = getOidcCallbackPath;
 
-export const vuexDispatchCustomBrowserEvent = dispatchCustomBrowserEvent
+export const vuexOidcUtils = utils;
+
+export const vuexDispatchCustomBrowserEvent = dispatchCustomBrowserEvent;
