@@ -71,7 +71,7 @@ export function vuexOidcCreateNuxtRouterMiddleware(namespace?: string): any;
 
 export function vuexOidcCreateRouterMiddleware(store: Store<any>, namespace?: string): any;
 
-export function vuexOidcProcessSilentSignInCallback(): void;
+export function vuexOidcProcessSilentSignInCallback(): Promise<void>;
 
 export function vuexOidcProcessSignInCallback(settings: VuexOidcClientSettings): void;
 
