@@ -1,5 +1,11 @@
 # vuex-oidc changelog
 
+## 3.9.0
+*2020-08-29*
+
+### Features
+* vuexOidcProcessSilentSignInCallback returns promise
+
 ## 3.8.0
 *2020-08-18*
 
