@@ -15,6 +15,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
   ])
   const oidcCallbackPath = getOidcCallbackPath(oidcConfig.redirect_uri, storeSettings.routeBase || '/')
   const oidcPopupCallbackPath = getOidcCallbackPath(oidcConfig.popup_redirect_uri, storeSettings.routeBase || '/')
+  const oidcSilentCallbackPath = getOidcCallbackPath(oidcConfig.silent_redirect_uri, storeSettings.routeBase || '/')
 
   // Add event listeners passed into factory function
   Object.keys(oidcEventListeners).forEach(eventName => {
@@ -78,6 +79,9 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       return true
     }
     if (route.path && route.path.replace(/\/$/, '') === oidcPopupCallbackPath) {
+      return true
+    }
+    if (route.path && route.path.replace(/\/$/, '') === oidcSilentCallbackPath) {
       return true
     }
     return false
