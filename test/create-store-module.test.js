@@ -59,6 +59,20 @@ describe('createStoreModule', function() {
           })
       });
     });
+    describe('check silent callback routes', function() {
+      it('should resolve true for oidcSilentCallbackRoutes routes if authenticated', function() {
+        return storeModule.actions.oidcCheckAccess(authenticatedContext(), oidcSilentCallbackRoute())
+          .then(function(hasAccess) {
+            assert.equal(hasAccess, true);
+          })
+      });
+      it('should resolve true for oidcSilentCallbackRoutes routes if not authenticated', function() {
+        return storeModule.actions.oidcCheckAccess(unAuthenticatedContext(), oidcSilentCallbackRoute())
+          .then(function(hasAccess) {
+            assert.equal(hasAccess, true);
+          })
+      });
+    });
     describe('check protected routes', function() {
       it('should resolve false for protected routes if not authenticated, and also dispatch auth redirect action', function() {
         const context = unAuthenticatedContext();
@@ -232,6 +246,15 @@ function oidcCallbackRoute() {
   return {
     meta: {
       isOidcCallback: true
+    }
+  }
+}
+
+function oidcSilentCallbackRoute() {
+  const silentUriParts = oidcConfig.silent_redirect_uri.split('/')
+  return {
+    path: `/${silentUriParts[silentUriParts.length - 1]}`,
+    meta: {
     }
   }
 }
