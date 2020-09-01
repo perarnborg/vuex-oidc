@@ -322,16 +322,29 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       /* istanbul ignore next */
       return oidcUserManager.signoutPopupCallback()
     },
-    signOutOidcSilent (context) {
+    signOutOidcSilent (context, payload) {
       /* istanbul ignore next */
       return new Promise((resolve, reject) => {
         try {
-          oidcUserManager.createSignoutRequest()
-            .then((signoutRequest) => {
-              openUrlWithIframe(signoutRequest.url)
-                .then(() => {
-                  context.commit('unsetOidcAuth')
-                  resolve()
+          oidcUserManager.getUser()
+            .then((user) => {
+              const args = objectAssign(
+                payload || {},
+                {
+                  id_token_hint: user ? user.id_token : null
+                }
+              )
+              if (payload.id_token_hint) {
+                args.id_token_hint = payload.id_token_hint
+              }
+              oidcUserManager.createSignoutRequest(args)
+                .then((signoutRequest) => {
+                  openUrlWithIframe(signoutRequest.url)
+                    .then(() => {
+                      context.commit('unsetOidcAuth')
+                      resolve()
+                    })
+                    .catch((err) => reject(err))
                 })
                 .catch((err) => reject(err))
             })
