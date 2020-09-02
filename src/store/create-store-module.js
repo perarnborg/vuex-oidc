@@ -349,7 +349,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
                 .then((signoutRequest) => {
                   openUrlWithIframe(signoutRequest.url)
                     .then(() => {
-                      context.commit('unsetOidcAuth')
+                      context.dispatch('removeOidcUser')
                       resolve()
                     })
                     .catch((err) => reject(err))
