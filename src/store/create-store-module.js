@@ -334,7 +334,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
                   id_token_hint: user ? user.id_token : null
                 }
               ])
-              if (payload.id_token_hint) {
+              if (payload && payload.id_token_hint) {
                 args.id_token_hint = payload.id_token_hint
               }
               oidcUserManager.createSignoutRequest(args)
