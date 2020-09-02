@@ -61,14 +61,18 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
   const authenticateOidcSilent = (context, payload = {}) => {
     // Take options for signinSilent from 1) payload or 2) storeSettings if defined there
     const options = payload.options || storeSettings.defaultSigninSilentOptions || {}
-    return oidcUserManager.signinSilent(options)
-      .then(user => {
-        context.dispatch('oidcWasAuthenticated', user)
-      })
-      .catch(err => {
-        context.commit('setOidcError', errorPayload('authenticateOidcSilent', err))
-        context.commit('setOidcAuthIsChecked')
-      })
+    return new Promise((resolve, reject) => {
+      oidcUserManager.signinSilent(options)
+        .then(user => {
+          context.dispatch('oidcWasAuthenticated', user)
+          resolve(user)
+        })
+        .catch(err => {
+          context.commit('setOidcError', errorPayload('authenticateOidcSilent', err))
+          context.commit('setOidcAuthIsChecked')
+          reject(err)
+        })
+    })
   }
 
   const routeIsOidcCallback = (route) => {
@@ -190,6 +194,10 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
                       authenticate()
                       resolve(false)
                     })
+                  })
+                  .catch(() => {
+                    authenticate()
+                    resolve(false)
                   })
                 return
               }
