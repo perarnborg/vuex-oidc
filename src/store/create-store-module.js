@@ -328,12 +328,12 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
         try {
           oidcUserManager.getUser()
             .then((user) => {
-              const args = objectAssign(
+              const args = objectAssign([
                 payload || {},
                 {
                   id_token_hint: user ? user.id_token : null
                 }
-              )
+              ])
               if (payload.id_token_hint) {
                 args.id_token_hint = payload.id_token_hint
               }
