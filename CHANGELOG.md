@@ -1,5 +1,12 @@
 # vuex-oidc changelog
 
+## 3.9.6
+*2020-09-02*
+
+### Fixes
+* Fix silentSignOut not removing user from storage
+* Minor type script fixes of action typings
+
 ## 3.9.5
 *2020-09-02*
 
