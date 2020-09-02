@@ -126,10 +126,11 @@ export interface VuexOidcStoreActions {
     eventName: string;
     eventListener: (...args: any[]) => void;
   }) => void;
-  signOutOidc: () => void;
+  signOutOidc: (payload?: object) => void;
   signOutOidcCallback: () => void;
+  signOutPopupOidc: (payload?: object) => void;
   signOutPopupOidcCallback: () => void;
-  signOutOidcSilent: () => Promise<void>;
+  signOutOidcSilent: (payload?: object) => Promise<void>;
   storeOidcUser: (user: User) => void;
   removeUser: () => void;
   removeOidcUser: () => void;
