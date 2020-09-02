@@ -1,5 +1,35 @@
 # vuex-oidc changelog
 
+## 3.9.5
+*2020-09-02*
+
+### Fixes
+* Fix authenticateOidcSilent not getting rejected if it fails
+
+## 3.9.4
+*2020-09-02*
+
+### Fixes
+* Fix error in silentSignOut
+
+## 3.9.3
+*2020-09-02*
+
+### Fixes
+* Fix error in silentSignOut
+
+## 3.9.2
+*2020-09-01*
+
+### Fixes
+* Send id_token_hint in signOutOidcSilent
+
+## 3.9.1
+*2020-08-29*
+
+### Fixes
+* silent_redirect_uri is always public if it is an app route
+
 ## 3.9.0
 *2020-08-29*
 
