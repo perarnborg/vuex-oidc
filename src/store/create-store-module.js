@@ -278,7 +278,12 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       if (!context.state.events_are_bound) {
         oidcUserManager.events.addAccessTokenExpired(() => { context.commit('unsetOidcAuth') })
         if (oidcSettings.automaticSilentRenew) {
-          oidcUserManager.events.addAccessTokenExpiring(() => { context.dispatch('authenticateOidcSilent') })
+          oidcUserManager.events.addAccessTokenExpiring(() => {
+            context.dispatch('authenticateOidcSilent')
+              .catch((err) => {
+                dispatchCustomErrorEvent('automaticSilentRenewError', errorPayload('authenticateOidcSilent', err))
+              })
+          })
         }
         context.commit('setOidcEventsAreBound')
       }
@@ -404,7 +409,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     },
     setOidcError (state, payload) {
       state.error = payload.error
-      dispatchErrorEvent(payload)
+      dispatchCustomErrorEvent('oidcError', payload)
     }
   }
 
@@ -415,13 +420,13 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     }
   }
 
-  const dispatchErrorEvent = payload => {
-    // oidcError is not a userManagementEvent, it is an event implemeted in vuex-oidc,
-    if (typeof oidcEventListeners.oidcError === 'function') {
-      oidcEventListeners.oidcError(payload)
+  const dispatchCustomErrorEvent = (eventName, payload) => {
+    // oidcError and automaticSilentRenewError are not UserManagement events, they are events implemeted in vuex-oidc,
+    if (typeof oidcEventListeners[eventName] === 'function') {
+      oidcEventListeners[eventName](payload)
     }
     if (storeSettings.dispatchEventsOnWindow) {
-      dispatchCustomBrowserEvent('oidcError', payload)
+      dispatchCustomBrowserEvent(eventName, payload)
     }
   }
 
