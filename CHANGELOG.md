@@ -1,5 +1,11 @@
 # vuex-oidc changelog
 
+## 3.9.7
+*2020-09-06*
+
+### Fixes
+* Add automaticSilentRenewError event
+
 ## 3.9.6
 *2020-09-02*
 
