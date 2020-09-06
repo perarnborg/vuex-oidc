@@ -421,7 +421,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
   }
 
   const dispatchCustomErrorEvent = (eventName, payload) => {
-    // oidcError and automaticSilentRenewError are not a userManagementEvent, they are events implemeted in vuex-oidc,
+    // oidcError and automaticSilentRenewError are not UserManagement events, they are events implemeted in vuex-oidc,
     if (typeof oidcEventListeners[eventName] === 'function') {
       oidcEventListeners[eventName](payload)
     }
