@@ -47,6 +47,7 @@ export interface VuexOidcStoreListeners {
   silentRenewError?: () => void;
   userSignedOut?: () => void;
   oidcError?: () => void;
+  automaticSilentRenewError?: () => void;
 }
 
 export interface VuexOidcState {
