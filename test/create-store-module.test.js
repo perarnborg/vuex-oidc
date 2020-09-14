@@ -34,14 +34,11 @@ describe('createStoreModule', function() {
             assert.equal(hasAccess, true);
           })
       });
-      it('should resolve true for public routes if not authenticated, and also dispatch silent auth action', function() {
+      it('should resolve true for public routes if not authenticated', function() {
         const context = unAuthenticatedContext();
-        sinon.spy(context, 'dispatch');
         return storeModule.actions.oidcCheckAccess(context, publicRoute())
           .then(function(hasAccess) {
             assert.equal(hasAccess, true);
-            assert.equal(context.dispatch.calledWith('authenticateOidcSilent'), true);
-            context.dispatch.restore();
           })
       });
     });

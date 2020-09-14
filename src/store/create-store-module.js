@@ -170,7 +170,8 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
                 context.commit('unsetOidcAuth')
               }
               if (authenticateSilently) {
-                context.dispatch('authenticateOidcSilent')
+                authenticateOidcSilent(context)
+                  .catch(() => {})
               }
             } else {
               const authenticate = () => {
@@ -279,7 +280,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
         oidcUserManager.events.addAccessTokenExpired(() => { context.commit('unsetOidcAuth') })
         if (oidcSettings.automaticSilentRenew) {
           oidcUserManager.events.addAccessTokenExpiring(() => {
-            context.dispatch('authenticateOidcSilent')
+            authenticateOidcSilent(context)
               .catch((err) => {
                 dispatchCustomErrorEvent('automaticSilentRenewError', errorPayload('authenticateOidcSilent', err))
               })
