@@ -1,5 +1,21 @@
 # vuex-oidc changelog
 
+## 3.10.0
+*2020-09-17*
+
+### Features
+* Support nuxt route meta arrays
+
+### Fixes
+* Fix storeSettings.isPublicRoute being ignored when publicRoutePaths is set
+* Ignore oidcError in some silent authentications
+
+## 3.9.8
+*2020-09-14*
+
+### Fixes
+* Fix for automaticSilentRenew and automaticSilentSignin
+
 ## 3.9.7
 *2020-09-06*
 
