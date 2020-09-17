@@ -83,6 +83,9 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     if (route.meta && route.meta.isOidcCallback) {
       return true
     }
+    if (route.meta && Array.isArray(route.meta) && route.meta.reduce((isOidcCallback, meta) => meta.isOidcCallback || isOidcCallback, false)) {
+      return true
+    }
     if (route.path && route.path.replace(/\/$/, '') === oidcCallbackPath) {
       return true
     }
@@ -99,8 +102,11 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     if (route.meta && route.meta.isPublic) {
       return true
     }
-    if (storeSettings.publicRoutePaths) {
-      return storeSettings.publicRoutePaths.map(path => path.replace(/\/$/, '')).indexOf(route.path.replace(/\/$/, '')) > -1
+    if (route.meta && Array.isArray(route.meta) && route.meta.reduce((isPublic, meta) => meta.isPublic || isPublic, false)) {
+      return true
+    }
+    if (storeSettings.publicRoutePaths && storeSettings.publicRoutePaths.map(path => path.replace(/\/$/, '')).indexOf(route.path.replace(/\/$/, '')) > -1) {
+      return true
     }
     if (storeSettings.isPublicRoute && typeof storeSettings.isPublicRoute === 'function') {
       return storeSettings.isPublicRoute(route)
