@@ -68,9 +68,13 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
           resolve(user)
         })
         .catch(err => {
-          context.commit('setOidcError', errorPayload('authenticateOidcSilent', err))
           context.commit('setOidcAuthIsChecked')
-          reject(err)
+          if (payload.ignoreErrors) {
+            resolve(null)
+          } else {
+            context.commit('setOidcError', errorPayload('authenticateOidcSilent', err))
+            reject(err)
+          }
         })
     })
   }
@@ -170,7 +174,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
                 context.commit('unsetOidcAuth')
               }
               if (authenticateSilently) {
-                authenticateOidcSilent(context)
+                authenticateOidcSilent(context, { ignoreErrors: true })
                   .catch(() => {})
               }
             } else {
@@ -184,7 +188,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
               }
               // If silent signin is set up, try to authenticate silently before denying access
               if (authenticateSilently) {
-                authenticateOidcSilent(context)
+                authenticateOidcSilent(context, { ignoreErrors: true })
                   .then(() => {
                     oidcUserManager.getUser().then(user => {
                       if (!user) {
