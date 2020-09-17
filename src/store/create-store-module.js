@@ -68,15 +68,22 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
           resolve(user)
         })
         .catch(err => {
-          context.commit('setOidcError', errorPayload('authenticateOidcSilent', err))
           context.commit('setOidcAuthIsChecked')
-          reject(err)
+          if (payload.ignoreErrors) {
+            resolve(null)
+          } else {
+            context.commit('setOidcError', errorPayload('authenticateOidcSilent', err))
+            reject(err)
+          }
         })
     })
   }
 
   const routeIsOidcCallback = (route) => {
     if (route.meta && route.meta.isOidcCallback) {
+      return true
+    }
+    if (route.meta && Array.isArray(route.meta) && route.meta.reduce((isOidcCallback, meta) => meta.isOidcCallback || isOidcCallback, false)) {
       return true
     }
     if (route.path && route.path.replace(/\/$/, '') === oidcCallbackPath) {
@@ -95,8 +102,11 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     if (route.meta && route.meta.isPublic) {
       return true
     }
-    if (storeSettings.publicRoutePaths) {
-      return storeSettings.publicRoutePaths.map(path => path.replace(/\/$/, '')).indexOf(route.path.replace(/\/$/, '')) > -1
+    if (route.meta && Array.isArray(route.meta) && route.meta.reduce((isPublic, meta) => meta.isPublic || isPublic, false)) {
+      return true
+    }
+    if (storeSettings.publicRoutePaths && storeSettings.publicRoutePaths.map(path => path.replace(/\/$/, '')).indexOf(route.path.replace(/\/$/, '')) > -1) {
+      return true
     }
     if (storeSettings.isPublicRoute && typeof storeSettings.isPublicRoute === 'function') {
       return storeSettings.isPublicRoute(route)
@@ -170,7 +180,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
                 context.commit('unsetOidcAuth')
               }
               if (authenticateSilently) {
-                authenticateOidcSilent(context)
+                authenticateOidcSilent(context, { ignoreErrors: true })
                   .catch(() => {})
               }
             } else {
@@ -184,7 +194,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
               }
               // If silent signin is set up, try to authenticate silently before denying access
               if (authenticateSilently) {
-                authenticateOidcSilent(context)
+                authenticateOidcSilent(context, { ignoreErrors: true })
                   .then(() => {
                     oidcUserManager.getUser().then(user => {
                       if (!user) {
