@@ -197,7 +197,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
                 authenticateOidcSilent(context, { ignoreErrors: true })
                   .then(() => {
                     oidcUserManager.getUser().then(user => {
-                      if (!user) {
+                      if (!user || user.expired) {
                         authenticate()
                       }
                       resolve(!!user)
