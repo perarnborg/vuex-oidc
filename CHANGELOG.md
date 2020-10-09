@@ -1,5 +1,12 @@
 # vuex-oidc changelog
 
+## 3.10.1
+*2020-10-09*
+
+### Fixes
+* Check expired user when signing in silently in check access
+* Add error payloads to typings
+
 ## 3.10.0
 *2020-09-17*
 
