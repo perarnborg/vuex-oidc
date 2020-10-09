@@ -39,6 +39,11 @@ export interface VuexOidcStoreSettings {
   isAuthenticatedBy?: 'access_token'|'id_token';
 }
 
+export interface VuexOidcErrorPayload {
+  context: string,
+  error: any
+}
+
 export interface VuexOidcStoreListeners {
   userLoaded?: (user: User) => void;
   userUnloaded?: () => void;
@@ -46,8 +51,8 @@ export interface VuexOidcStoreListeners {
   accessTokenExpired?: () => void;
   silentRenewError?: () => void;
   userSignedOut?: () => void;
-  oidcError?: () => void;
-  automaticSilentRenewError?: () => void;
+  oidcError?: (payload?: VuexOidcErrorPayload) => void;
+  automaticSilentRenewError?: (payload?: VuexOidcErrorPayload) => void;
 }
 
 export interface VuexOidcState {
