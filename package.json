@@ -41,7 +41,6 @@
     "mocha": "^6.2.0",
     "node-storage-shim": "^2.0.0",
     "nyc": "^14.1.1",
-    "oidc-client": ">= 1.6.1",
     "rollup": "^1.19.4",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-commonjs": "^10.0.2",
