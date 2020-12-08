@@ -1,10 +1,13 @@
 import { objectAssign, parseJwt, firstLetterUppercase, camelCaseToSnakeCase } from './utils'
 import { UserManager, WebStorageStateStore } from 'oidc-client'
+import CnxClock from './cnx-clock'
 
 const defaultOidcConfig = {
   userStore: new WebStorageStateStore(),
   loadUserInfo: true,
-  automaticSilentSignin: true
+  automaticSilentSignin: true,
+  timeInsensitive: true,
+  now: CnxClock.singleton.now
 }
 
 const requiredConfigProperties = [
@@ -12,7 +15,9 @@ const requiredConfigProperties = [
   'client_id',
   'redirect_uri',
   'response_type',
-  'scope'
+  'scope',
+  'now',
+  'timeInsensitive'
 ]
 
 const settingsThatAreSnakeCasedInOidcClient = [
