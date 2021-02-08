@@ -16,6 +16,7 @@ export interface VuexOidcClientSettings extends OidcClientSettings {
   popupRedirectUri?: string;
   silentRedirectUri?: string;
   automaticSilentRenew?: boolean;
+  automaticSilentSignin?: boolean;
   extraQueryParams?: Record<string, any>;
 }
 
