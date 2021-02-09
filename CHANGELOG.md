@@ -1,5 +1,11 @@
 # vuex-oidc changelog
 
+## 3.10.2
+*2021-02-09*
+
+### Fixes
+* Add missing typing
+
 ## 3.10.1
 *2020-10-09*
 
