@@ -103,7 +103,7 @@ export function vuexDispatchCustomBrowserEvent<T>(
 export interface VuexOidcRouteMeta {
   isPublic?: boolean;
   isOidcCallback?: boolean;
-  [propName: string]: any;
+  [propName: string]: unknown;
 }
 
 export type VuexOidcRouteConfig = RouteConfig & {
