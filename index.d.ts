@@ -22,6 +22,8 @@ export interface VuexOidcClientSettings extends OidcClientSettings {
 
 export interface VuexOidcSigninRedirectOptions {
   useReplaceToNavigate?: boolean;
+  skipUserInfo?: boolean;
+  extraQueryParams?: Record<string, any>;
 }
 
 export interface VuexOidcSigninSilentOptions {}
