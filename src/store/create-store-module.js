@@ -122,6 +122,9 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     oidcUser: (state) => {
       return state.user
     },
+    oidcUserManager: () => {
+      return oidcUserManager;
+    },
     oidcAccessToken: (state) => {
       return tokenIsExpired(state.access_token) ? null : state.access_token
     },
