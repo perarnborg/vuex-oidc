@@ -6,23 +6,35 @@ import { openUrlWithIframe } from '../services/navigation'
 export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
   const oidcConfig = getOidcConfig(oidcSettings)
   const oidcUserManager = createOidcUserManager(oidcSettings)
-  storeSettings = objectAssign([
-    {
-      namespaced: false,
-      isAuthenticatedBy: 'id_token'
-    },
-    storeSettings
-  ])
-  const oidcCallbackPath = getOidcCallbackPath(oidcConfig.redirect_uri, storeSettings.routeBase || '/')
-  const oidcPopupCallbackPath = getOidcCallbackPath(oidcConfig.popup_redirect_uri, storeSettings.routeBase || '/')
-  const oidcSilentCallbackPath = getOidcCallbackPath(oidcConfig.silent_redirect_uri, storeSettings.routeBase || '/')
+
+  if (typeof storeSettings === 'function') {
+    storeSettings = () => objectAssign([
+      {
+        namespaced: false,
+        isAuthenticatedBy: 'id_token'
+      },
+      storeSettings()
+    ])
+  } else {
+    storeSettings = () => objectAssign([
+      {
+        namespaced: false,
+        isAuthenticatedBy: 'id_token'
+      },
+      storeSettings
+    ])
+  }
+
+  const oidcCallbackPath = getOidcCallbackPath(oidcConfig.redirect_uri, storeSettings().routeBase || '/')
+  const oidcPopupCallbackPath = getOidcCallbackPath(oidcConfig.popup_redirect_uri, storeSettings().routeBase || '/')
+  const oidcSilentCallbackPath = getOidcCallbackPath(oidcConfig.silent_redirect_uri, storeSettings().routeBase || '/')
 
   // Add event listeners passed into factory function
   Object.keys(oidcEventListeners).forEach(eventName => {
     addUserManagerEventListener(oidcUserManager, eventName, oidcEventListeners[eventName])
   })
 
-  if (storeSettings.dispatchEventsOnWindow) {
+  if (storeSettings().dispatchEventsOnWindow) {
     // Dispatch oidc-client events on window (if in browser)
     const userManagerEvents = [
       'userLoaded',
@@ -51,7 +63,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
   }
 
   const isAuthenticated = (state) => {
-    if (state[storeSettings.isAuthenticatedBy]) {
+    if (state[storeSettings().isAuthenticatedBy]) {
       return true
     }
 
@@ -60,7 +72,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
 
   const authenticateOidcSilent = (context, payload = {}) => {
     // Take options for signinSilent from 1) payload or 2) storeSettings if defined there
-    const options = payload.options || storeSettings.defaultSigninSilentOptions || {}
+    const options = payload.options || storeSettings().defaultSigninSilentOptions || {}
     return new Promise((resolve, reject) => {
       oidcUserManager.signinSilent(options)
         .then(user => {
@@ -105,11 +117,11 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     if (route.meta && Array.isArray(route.meta) && route.meta.reduce((isPublic, meta) => meta.isPublic || isPublic, false)) {
       return true
     }
-    if (storeSettings.publicRoutePaths && storeSettings.publicRoutePaths.map(path => path.replace(/\/$/, '')).indexOf(route.path.replace(/\/$/, '')) > -1) {
+    if (storeSettings().publicRoutePaths && storeSettings().publicRoutePaths.map(path => path.replace(/\/$/, '')).indexOf(route.path.replace(/\/$/, '')) > -1) {
       return true
     }
-    if (storeSettings.isPublicRoute && typeof storeSettings.isPublicRoute === 'function') {
-      return storeSettings.isPublicRoute(route)
+    if (storeSettings().isPublicRoute && typeof storeSettings().isPublicRoute === 'function') {
+      return storeSettings().isPublicRoute(route)
     }
     return false
   }
@@ -222,7 +234,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
               if (oidcEventListeners && typeof oidcEventListeners.userLoaded === 'function') {
                 oidcEventListeners.userLoaded(user)
               }
-              if (storeSettings.dispatchEventsOnWindow) {
+              if (storeSettings().dispatchEventsOnWindow) {
                 dispatchCustomBrowserEvent('userLoaded', user)
               }
             }
@@ -241,7 +253,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
         sessionStorage.removeItem('vuex_oidc_active_route')
       }
       // Take options for signinRedirect from 1) payload or 2) storeSettings if defined there
-      const options = payload.options || storeSettings.defaultSigninRedirectOptions || {}
+      const options = payload.options || storeSettings().defaultSigninRedirectOptions || {}
       return oidcUserManager.signinRedirect(options).catch(err => {
         context.commit('setOidcError', errorPayload('authenticateOidc', err))
       })
@@ -265,7 +277,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     },
     authenticateOidcPopup (context, payload = {}) {
       // Take options for signinPopup from 1) payload or 2) storeSettings if defined there
-      const options = payload.options || storeSettings.defaultSigninPopupOptions || {}
+      const options = payload.options || storeSettings().defaultSigninPopupOptions || {}
       return oidcUserManager.signinPopup(options)
         .then(user => {
           context.dispatch('oidcWasAuthenticated', user)
@@ -436,7 +448,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     if (typeof oidcEventListeners[eventName] === 'function') {
       oidcEventListeners[eventName](payload)
     }
-    if (storeSettings.dispatchEventsOnWindow) {
+    if (storeSettings().dispatchEventsOnWindow) {
       dispatchCustomBrowserEvent(eventName, payload)
     }
   }
