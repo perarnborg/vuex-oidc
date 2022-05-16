@@ -1,5 +1,12 @@
 # vuex-oidc changelog
 
+## 4.0.0
+*2022-MM-DD*
+
+### Breaking Changes
+* oidc-client-ts instead of oidc-client is now a required peer dependency
+  The Authorized Code Flow instead of the Implicit Flow is the only supported OAuth flow type
+
 ## 3.10.2
 *2021-02-09*
 

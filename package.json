@@ -22,7 +22,7 @@
   "module": "dist/vuex-oidc.esm.js",
   "typings": "index.d.ts",
   "peerDependencies": {
-    "oidc-client": ">= 1.10.1",
+    "oidc-client-ts": ">= 2.0.0",
     "vue": ">= 2.5.0",
     "vuex": ">= 3.0.0"
   },
@@ -38,7 +38,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "jsdom": "^15.1.1",
-    "oidc-client": ">= 1.10.1",
+    "oidc-client-ts": ">= 2.0.0",
     "mocha": "^6.2.0",
     "node-storage-shim": "^2.0.0",
     "nyc": "^14.1.1",
