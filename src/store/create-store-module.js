@@ -390,6 +390,12 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     },
     clearStaleState () {
       return oidcUserManager.clearStaleState()
+    },
+    startSilentRenew () {
+      return oidcUserManager.startSilentRenew()
+    },
+    stopSilentRenew () {
+      return oidcUserManager.stopSilentRenew()
     }
   }
 
