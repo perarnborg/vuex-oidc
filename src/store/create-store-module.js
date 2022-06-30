@@ -9,7 +9,8 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
   storeSettings = objectAssign([
     {
       namespaced: false,
-      isAuthenticatedBy: 'id_token'
+      isAuthenticatedBy: 'id_token',
+      removeUserWhenTokensExpire: true
     },
     storeSettings
   ])
@@ -132,10 +133,10 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       return state.scopes
     },
     oidcIdToken: (state) => {
-      return tokenIsExpired(state.id_token) ? null : state.id_token
+      return storeSettings.removeUserWhenTokensExpire && tokenIsExpired(state.id_token) ? null : state.id_token
     },
     oidcIdTokenExp: (state) => {
-      return tokenExp(state.id_token)
+      return storeSettings.removeUserWhenTokensExpire ? tokenExp(state.id_token) : null
     },
     oidcRefreshToken: (state) => {
       return tokenIsExpired(state.refresh_token) ? null : state.refresh_token
@@ -287,7 +288,13 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     oidcWasAuthenticated (context, user) {
       context.commit('setOidcAuth', user)
       if (!context.state.events_are_bound) {
-        oidcUserManager.events.addAccessTokenExpired(() => { context.commit('unsetOidcAuth') })
+        oidcUserManager.events.addAccessTokenExpired(() => {
+          if (storeSettings.removeUserWhenTokensExpire) {
+            context.commit('unsetOidcAuth')
+          } else {
+            context.commit('unsetOidcAccessToken')
+          }
+        })
         if (oidcSettings.automaticSilentRenew) {
           oidcUserManager.events.addAccessTokenExpiring(() => {
             authenticateOidcSilent(context)
@@ -417,6 +424,10 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       state.access_token = null
       state.refresh_token = null
       state.user = null
+    },
+    unsetOidcAccessToken (state) {
+      state.access_token = null
+      state.refresh_token = null
     },
     setOidcAuthIsChecked (state) {
       state.is_checked = true

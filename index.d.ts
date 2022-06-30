@@ -40,6 +40,7 @@ export interface VuexOidcStoreSettings {
   defaultSigninSilentOptions?: VuexOidcSigninSilentOptions;
   defaultSigninPopupOptions?: VuexOidcSigninPopupOptions;
   isAuthenticatedBy?: 'access_token'|'id_token';
+  removeUserWhenTokensExpire?: boolean
 }
 
 export interface VuexOidcErrorPayload {
