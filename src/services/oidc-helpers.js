@@ -103,10 +103,9 @@ export const tokenExp = (token) => {
   return null
 }
 
-export const tokenIsExpired = (token) => {
-  const tokenExpiryTime = tokenExp(token)
-  if (tokenExpiryTime) {
-    return tokenExpiryTime < new Date().getTime()
+export const tokenIsExpired = (expiresAt) => {
+  if (expiresAt) {
+    return expiresAt < new Date().getTime()
   }
   return false
 }

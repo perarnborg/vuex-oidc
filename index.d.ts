@@ -63,6 +63,7 @@ export interface VuexOidcState {
   access_token: string | null;
   id_token: string | null;
   user: any | null;
+  expires_at: number | null;
   scopes: string[] | null;
   is_checked: boolean;
   events_are_bound: boolean;
