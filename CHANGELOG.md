@@ -1,5 +1,12 @@
 # vuex-oidc changelog
 
+## 3.11.0
+*2022-06-30*
+
+### Features
+* Stop relying on exp claim to check if access tokens are expired
+* Allow not removing user when tokens expire
+
 ## 3.10.2
 *2021-02-09*
 
