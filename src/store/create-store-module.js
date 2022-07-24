@@ -420,7 +420,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     },
     setOidcUser (state, user) {
       state.user = user ? user.profile : null
-      state.expires_at = user.expires_at ? user.expires_at * 1000 : null
+      state.expires_at = user && user.expires_at ? user.expires_at * 1000 : null
     },
     unsetOidcAuth (state) {
       state.id_token = null
