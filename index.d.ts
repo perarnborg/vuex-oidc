@@ -78,9 +78,17 @@ export function vuexOidcCreateStoreModule(
   listeners?: VuexOidcStoreListeners,
 ): Module<VuexOidcState, any>;
 
+export function vuexOidcCreateReactiveState(
+  settings: VuexOidcClientSettings,
+  stateSettings?: VuexOidcStoreSettings,
+  listeners?: VuexOidcStoreListeners,
+): VuexOidcState & VuexOidcStoreGetters & VuexOidcStoreActions;
+
 export function vuexOidcCreateNuxtRouterMiddleware(namespace?: string): any;
 
 export function vuexOidcCreateRouterMiddleware(store: Store<any>, namespace?: string): any;
+
+export function vuexOidcCreateReactiveStateRouterMiddleware(state: any): any
 
 export function vuexOidcProcessSilentSignInCallback(): Promise<void>;
 
