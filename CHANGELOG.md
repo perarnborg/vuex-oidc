@@ -6,6 +6,12 @@
 ### Breaking Changes
 * oidc-client-ts instead of oidc-client is now a required peer dependency
   The Authorized Code Flow instead of the Implicit Flow is the only supported OAuth flow type
+## 3.11.0
+*2022-06-30*
+
+### Features
+* Stop relying on exp claim to check if access tokens are expired
+* Allow not removing user when tokens expire
 
 ## 3.10.2
 *2021-02-09*

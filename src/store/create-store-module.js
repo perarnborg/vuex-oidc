@@ -9,7 +9,8 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
   storeSettings = objectAssign([
     {
       namespaced: false,
-      isAuthenticatedBy: 'id_token'
+      isAuthenticatedBy: 'id_token',
+      removeUserWhenTokensExpire: true
     },
     storeSettings
   ])
@@ -44,6 +45,7 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     id_token: null,
     refresh_token: null,
     user: null,
+    expires_at: null,
     scopes: null,
     is_checked: false,
     events_are_bound: false,
@@ -123,16 +125,16 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       return state.user
     },
     oidcAccessToken: (state) => {
-      return tokenIsExpired(state.access_token) ? null : state.access_token
+      return tokenIsExpired(state.expires_at) ? null : state.access_token
     },
     oidcAccessTokenExp: (state) => {
-      return tokenExp(state.access_token)
+      return state.expires_at
     },
     oidcScopes: (state) => {
       return state.scopes
     },
     oidcIdToken: (state) => {
-      return tokenIsExpired(state.id_token) ? null : state.id_token
+      return storeSettings.removeUserWhenTokensExpire && tokenExp(state.expires_at) ? null : state.id_token
     },
     oidcIdTokenExp: (state) => {
       return tokenExp(state.id_token)
@@ -287,7 +289,13 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     oidcWasAuthenticated (context, user) {
       context.commit('setOidcAuth', user)
       if (!context.state.events_are_bound) {
-        oidcUserManager.events.addAccessTokenExpired(() => { context.commit('unsetOidcAuth') })
+        oidcUserManager.events.addAccessTokenExpired(() => {
+          if (storeSettings.removeUserWhenTokensExpire) {
+            context.commit('unsetOidcAuth')
+          } else {
+            context.commit('unsetOidcAccessToken')
+          }
+        })
         if (oidcSettings.automaticSilentRenew) {
           oidcUserManager.events.addAccessTokenExpiring(() => {
             authenticateOidcSilent(context)
@@ -390,6 +398,12 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
     },
     clearStaleState () {
       return oidcUserManager.clearStaleState()
+    },
+    startSilentRenew () {
+      return oidcUserManager.startSilentRenew()
+    },
+    stopSilentRenew () {
+      return oidcUserManager.stopSilentRenew()
     }
   }
 
@@ -399,18 +413,24 @@ export default (oidcSettings, storeSettings = {}, oidcEventListeners = {}) => {
       state.id_token = user.id_token
       state.access_token = user.access_token
       state.refresh_token = user.refresh_token
+      state.expires_at = user.expires_at ? user.expires_at * 1000 : null
       state.user = user.profile
       state.scopes = user.scopes
       state.error = null
     },
     setOidcUser (state, user) {
       state.user = user ? user.profile : null
+      state.expires_at = user && user.expires_at ? user.expires_at * 1000 : null
     },
     unsetOidcAuth (state) {
       state.id_token = null
       state.access_token = null
       state.refresh_token = null
       state.user = null
+    },
+    unsetOidcAccessToken (state) {
+      state.access_token = null
+      state.refresh_token = null
     },
     setOidcAuthIsChecked (state) {
       state.is_checked = true
