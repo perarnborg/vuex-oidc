@@ -5,6 +5,7 @@ import { Route, RouteConfig } from 'vue-router';
 export interface VuexOidcClientSettings extends OidcClientSettings {
   authority: string;
   clientId: string;
+  clientSecret?: string;
   redirectUri: string;
   responseType: string;
   scope: string;
@@ -82,7 +83,7 @@ export function vuexOidcCreateNuxtRouterMiddleware(namespace?: string): any;
 
 export function vuexOidcCreateRouterMiddleware(store: Store<any>, namespace?: string): any;
 
-export function vuexOidcProcessSilentSignInCallback(): Promise<void>;
+export function vuexOidcProcessSilentSignInCallback(settings: VuexOidcClientSettings): Promise<void>;
 
 export function vuexOidcProcessSignInCallback(settings: VuexOidcClientSettings): void;
 

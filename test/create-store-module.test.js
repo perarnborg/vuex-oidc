@@ -10,7 +10,7 @@ describe('createStoreModule', function() {
   before(function () {
     vuexOidc = require('../dist/vuex-oidc.cjs');
     storeModule = vuexOidc.vuexOidcCreateStoreModule(oidcConfig, {dispatchEventsOnWindow: true});
-    UserManager = require('oidc-client').UserManager;
+    UserManager = require('oidc-client-ts').UserManager;
   });
 
   afterEach(function () {
