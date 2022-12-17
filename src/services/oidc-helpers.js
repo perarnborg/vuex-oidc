@@ -79,7 +79,7 @@ export const removeUserManagerEventListener = (oidcUserManager, eventName, event
 }
 
 export const processSilentSignInCallback = (oidcSettings) => {
-  return new createOidcUserManager(oidcSettings).signinSilentCallback()
+  return createOidcUserManager(oidcSettings).signinSilentCallback()
 }
 
 export const processSignInCallback = (oidcSettings) => {
