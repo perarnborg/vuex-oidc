@@ -17,6 +17,7 @@ const requiredConfigProperties = [
 
 const settingsThatAreSnakeCasedInOidcClient = [
   'clientId',
+  'clientSecret',
   'redirectUri',
   'responseType',
   'maxAge',

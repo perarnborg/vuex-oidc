@@ -34,10 +34,12 @@ describe("oidcHelper.createOidcUserManager", function () {
     const camelCaseOidcConfig = {
       ...oidcConfig,
       clientId: oidcConfig.client_id,
+      clientSecret: oidcConfig.client_secret,
       redirectUri: oidcConfig.redirect_uri,
       responseType: oidcConfig.response_type,
     };
     delete camelCaseOidcConfig.client_id;
+    delete camelCaseOidcConfig.client_secret;
     delete camelCaseOidcConfig.redirect_uri;
     delete camelCaseOidcConfig.response_type;
     let userManager;

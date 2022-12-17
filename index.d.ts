@@ -5,6 +5,7 @@ import { Route, RouteConfig } from 'vue-router';
 export interface VuexOidcClientSettings extends OidcClientSettings {
   authority: string;
   clientId: string;
+  clientSecret?: string;
   redirectUri: string;
   responseType: string;
   scope: string;
