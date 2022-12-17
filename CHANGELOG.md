@@ -1,7 +1,7 @@
 # vuex-oidc changelog
 
 ## 4.0.0
-*2022-MM-DD*
+*Unreleased*
 
 ### Breaking Changes
 * oidc-client-ts instead of oidc-client is now a required peer dependency
