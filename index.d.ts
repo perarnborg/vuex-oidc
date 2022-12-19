@@ -1,6 +1,7 @@
-import { ActionContext, Module, Store } from 'vuex';
-import { OidcClientSettings, User, UserManager } from 'oidc-client';
-import { Route, RouteConfig } from 'vue-router';
+import Vue from 'vue'
+import { Module, Store } from 'vuex';
+import { OidcClientSettings, User, UserManager, Profile, SignoutResponse } from 'oidc-client';
+import { Route, RouteConfig, NavigationGuard } from 'vue-router';
 
 export interface VuexOidcClientSettings extends OidcClientSettings {
   authority: string;
@@ -34,7 +35,7 @@ export interface VuexOidcSigninPopupOptions {}
 export interface VuexOidcStoreSettings {
   namespaced?: boolean;
   dispatchEventsOnWindow?: boolean;
-  isPublicRoute?: (route: Route) => boolean;
+  isPublicRoute?: (route: VuexOidcRoute) => boolean;
   publicRoutePaths?: string[];
   routeBase?: string;
   defaultSigninRedirectOptions?: VuexOidcSigninRedirectOptions;
@@ -81,7 +82,7 @@ export function vuexOidcCreateStoreModule(
 
 export function vuexOidcCreateNuxtRouterMiddleware(namespace?: string): any;
 
-export function vuexOidcCreateRouterMiddleware(store: Store<any>, namespace?: string): any;
+export function vuexOidcCreateRouterMiddleware(store: Store<any>, namespace?: string): NavigationGuard<Vue>;
 
 export function vuexOidcProcessSilentSignInCallback(settings: VuexOidcClientSettings): Promise<void>;
 
@@ -105,12 +106,26 @@ export function vuexDispatchCustomBrowserEvent<T>(
   params?: EventInit,
 ): any;
 
+export interface VuexOidcRouteMeta {
+  isPublic?: boolean;
+  isOidcCallback?: boolean;
+  [propName: string]: unknown;
+}
+
+export type VuexOidcRouteConfig = RouteConfig & {
+  meta?: VuexOidcRouteMeta;
+}
+
+export interface VuexOidcRoute extends Route {
+  meta?: VuexOidcRouteMeta;
+}
+
 // The following types are not exposed directly, they are part of the store
 // and mostly for reference, or for use with vuex-class.
 
 export interface VuexOidcStoreGetters {
   readonly oidcIsAuthenticated: boolean;
-  readonly oidcUser: any | null;
+  readonly oidcUser?: Profile;
   readonly oidcAccessToken: string | null;
   readonly oidcAccessTokenExp: number | null;
   readonly oidcScopes: string[] | null;
@@ -118,16 +133,16 @@ export interface VuexOidcStoreGetters {
   readonly oidcIdTokenExp: number | null;
   readonly oidcAuthenticationIsChecked: boolean | null;
   readonly oidcError: string | null;
-  readonly oidcIsRoutePublic: (route: RouteConfig) => boolean;
+  readonly oidcIsRoutePublic: (route: VuexOidcRouteConfig) => boolean;
 }
 
 export interface VuexOidcStoreActions {
-  oidcCheckAccess: (route: Route) => Promise<boolean>;
+  oidcCheckAccess: (route: VuexOidcRoute) => Promise<boolean>;
   authenticateOidc: (payload?: string | { [key: string]: any }) => Promise<void>;
-  authenticateOidcSilent: (payload?: { options?: VuexOidcSigninSilentOptions }) => Promise<void>;
+  authenticateOidcSilent: (payload?: { options?: VuexOidcSigninSilentOptions }) => Promise<User | any>;
   authenticateOidcPopup: (payload?: { options?: VuexOidcSigninPopupOptions }) => Promise<void>;
-  oidcSignInCallback: (url?: string) => Promise<string>;
-  oidcSignInPopupCallback: (url?: string) => Promise<User | undefined>;
+  oidcSignInCallback: (url?: string) => Promise<string | any>;
+  oidcSignInPopupCallback: (url?: string) => Promise<User | any>;
   oidcWasAuthenticated: (user: User) => void;
   getOidcUser: () => Promise<User>;
   addOidcEventListener: (payload: {
@@ -138,15 +153,15 @@ export interface VuexOidcStoreActions {
     eventName: string;
     eventListener: (...args: any[]) => void;
   }) => void;
-  signOutOidc: (payload?: object) => void;
-  signOutOidcCallback: () => void;
-  signOutPopupOidc: (payload?: object) => void;
-  signOutPopupOidcCallback: () => void;
-  signOutOidcSilent: (payload?: object) => Promise<void>;
-  storeOidcUser: (user: User) => void;
+  signOutOidc: (payload?: object) => Promise<void>;
+  signOutOidcCallback: () => Promise<SignoutResponse>;
+  signOutPopupOidc: (payload?: object) => Promise<void>;
+  signOutPopupOidcCallback: () => Promise<void>;
+  signOutOidcSilent: (payload?: object) => Promise<any>;
+  storeOidcUser: (user: User) => Promise<void>;
   removeUser: () => void;
-  removeOidcUser: () => void;
-  clearStaleState: () => void;
+  removeOidcUser: () => Promise<void>;
+  clearStaleState: () => Promise<void>;
 }
 
 export interface VuexOidcStoreMutations {
