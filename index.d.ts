@@ -1,5 +1,5 @@
 import { ActionContext, Module, Store } from 'vuex';
-import { OidcClientSettings, User, UserManager } from 'oidc-client';
+import { OidcClientSettings, User, UserManager } from 'oidc-client-ts';
 import { Route, RouteConfig } from 'vue-router';
 
 export interface VuexOidcClientSettings extends OidcClientSettings {

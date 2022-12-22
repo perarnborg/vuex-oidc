@@ -43,6 +43,6 @@ export default [
 			{ file: pkg.module, format: 'es' }
 		],
 		plugins: rollupPlugins,
-  	external: [ 'oidc-client' ]
+  	external: [ 'oidc-client-ts' ]
 	}
 ];
