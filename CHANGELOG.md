@@ -1,5 +1,12 @@
 # vuex-oidc changelog
 
+## 4.0.1
+*2022-12-22*
+
+### Fixes
+* Change import in typings to oidc-client-ts
+* Add vue-router to peer dependencies
+
 ## 4.0.0
 *2022-12-18*
 
