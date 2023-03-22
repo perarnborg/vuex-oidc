@@ -1,6 +1,6 @@
 # vuex-oidc
 
-Vue.js implementation of [oidc-client](https://github.com/IdentityModel/oidc-client-js) using vuex and vue-router.
+Vue.js implementation of [oidc-client-ts](https://github.com/authts/oidc-client-ts) (or [oidc-client](https://github.com/IdentityModel/oidc-client-js) in <v4) using vuex and vue-router.
 
 > :warning: **Breaking changes**: vuex-oidc v4 introduces some breaking changes.
 >
