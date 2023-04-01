@@ -1,5 +1,11 @@
 # vuex-oidc changelog
 
+## 4.0.2
+*2023-04-01*
+
+### Fixes
+* Change ts interface to be compatible with oidc-client-ts interface
+
 ## 4.0.1
 *2022-12-22*
 
